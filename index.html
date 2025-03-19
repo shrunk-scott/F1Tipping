@@ -163,46 +163,59 @@
           const [picks, setPicks] = React.useState({ first: null, second: null, third: null });
           const [leaderboard, setLeaderboard] = React.useState([]);
 
-          // Authentication functions
+          // Handle login
           const handleLogin = () => {
-            const user = users.find(u => u.username === loginUsername && u.password === loginPassword);
+            // Clear whitespace and convert to lowercase for consistency
+            const username = loginUsername.trim().toLowerCase();
+            const user = users.find(u => u.username.toLowerCase() === username && u.password === loginPassword);
+            
             if (user) {
               setCurrentUser(user);
               setIsLoggedIn(true);
               setLoginUsername('');
               setLoginPassword('');
+              console.log("Logged in as:", user.name);
             } else {
               alert('Invalid username or password');
             }
           };
 
+          // Handle register
           const handleRegister = () => {
             if (!registerUsername || !registerPassword || !registerName) {
               alert('Please fill in all fields');
               return;
             }
-
+            
+            // Clean up username - lowercase, no spaces
+            const username = registerUsername.trim().toLowerCase();
+            
             // Check if username already exists
-            if (users.some(u => u.username === registerUsername)) {
+            if (users.some(u => u.username.toLowerCase() === username)) {
               alert('Username already exists');
               return;
             }
 
             const newUser = {
-              id: users.length + 1,
-              username: registerUsername,
+              id: Math.max(...users.map(u => u.id), 0) + 1,
+              username: username,
               password: registerPassword,
-              name: registerName,
+              name: registerName.trim(), // Clean up name too, but preserve case
               picks: {},
               scores: {}
             };
 
-            setUsers([...users, newUser]);
+            const updatedUsers = [...users, newUser];
+            setUsers(updatedUsers);
             setRegisterUsername('');
             setRegisterPassword('');
             setRegisterName('');
             setShowRegister(false);
             alert('Registration successful! You can now log in.');
+            
+            // Debug
+            console.log("New user registered:", newUser.name);
+            console.log("Total users now:", updatedUsers.length);
           };
 
           const handleLogout = () => {
@@ -278,34 +291,33 @@
           React.useEffect(() => {
             const savedData = localStorage.getItem('f1TippingData');
             if (savedData) {
-              const data = JSON.parse(savedData);
-              if (data.users) setUsers(data.users);
-              if (data.races) setRaces(data.races);
+              try {
+                const data = JSON.parse(savedData);
+                if (data.users) setUsers(data.users);
+                if (data.races) setRaces(data.races);
+              } catch (e) {
+                console.error("Error parsing saved data:", e);
+              }
             }
-            
-            // Calculate leaderboard based on existing data
-            updateLeaderboard();
           }, []);
           
-          // Update leaderboard
-          const updateLeaderboard = () => {
+          // Calculate and update leaderboard when users or races change
+          React.useEffect(() => {
+            // Force calculate leaderboard from current users
             const board = users.map(user => {
               const totalScore = Object.values(user.scores).reduce((sum, score) => sum + score, 0);
               return { id: user.id, name: user.name, score: totalScore };
             });
+            
+            // Sort by lowest score first (lowest score wins)
             board.sort((a, b) => a.score - b.score);
             setLeaderboard(board);
-          };
-          
-          // Save data to localStorage when state changes
-          React.useEffect(() => {
+            
+            // Also save to localStorage
             localStorage.setItem('f1TippingData', JSON.stringify({
               users: users,
               races: races
             }));
-            
-            // Update leaderboard whenever users or races change
-            updateLeaderboard();
           }, [users, races]);
 
           // Login Form - forcing login to access the app
@@ -830,54 +842,43 @@
               {/* Leaderboard */}
               <div className="p-4 bg-white rounded shadow">
                 <h2 className="text-xl font-semibold mb-3">Leaderboard</h2>
-                {users.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white">
-                      <thead>
-                        <tr>
-                          <th className="py-2 px-4 border-b text-left">Position</th>
-                          <th className="py-2 px-4 border-b text-left">Player</th>
-                          <th className="py-2 px-4 border-b text-left">Total Score</th>
-                          {races.filter(race => race.completed).map(race => (
-                            <th key={race.id} className="py-2 px-4 border-b text-center">R{race.id}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {users
-                          .map(user => {
-                            const totalScore = Object.values(user.scores).reduce((sum, score) => sum + score, 0);
-                            return { id: user.id, name: user.name, score: totalScore };
-                          })
-                          .sort((a, b) => a.score - b.score)
-                          .map((player, index) => (
-                            <tr 
-                              key={player.id} 
-                              className={`${index === 0 ? 'bg-yellow-100' : ''} ${player.id === currentUser.id ? 'bg-blue-50' : ''}`}
-                            >
-                              <td className="py-2 px-4 border-b">{index + 1}</td>
-                              <td className="py-2 px-4 border-b">
-                                {player.name} {player.id === currentUser.id && '(You)'}
+                <div className="overflow-x-auto">
+                  <table className="min-w-full bg-white">
+                    <thead>
+                      <tr>
+                        <th className="py-2 px-4 border-b text-left">Position</th>
+                        <th className="py-2 px-4 border-b text-left">Player</th>
+                        <th className="py-2 px-4 border-b text-left">Total Score</th>
+                        {races.filter(race => race.completed).map(race => (
+                          <th key={race.id} className="py-2 px-4 border-b text-center">R{race.id}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {leaderboard.map((player, index) => (
+                        <tr 
+                          key={player.id} 
+                          className={`${index === 0 ? 'bg-yellow-100' : ''} ${player.id === currentUser?.id ? 'bg-blue-50' : ''}`}
+                        >
+                          <td className="py-2 px-4 border-b">{index + 1}</td>
+                          <td className="py-2 px-4 border-b">
+                            {player.name} {player.id === currentUser?.id && '(You)'}
+                          </td>
+                          <td className="py-2 px-4 border-b font-bold">{player.score}</td>
+                          {races.filter(race => race.completed).map(race => {
+                            const user = users.find(u => u.id === player.id);
+                            const raceScore = user?.scores[race.id] || '-';
+                            return (
+                              <td key={race.id} className="py-2 px-4 border-b text-center">
+                                {raceScore}
                               </td>
-                              <td className="py-2 px-4 border-b font-bold">{player.score}</td>
-                              {races.filter(race => race.completed).map(race => {
-                                const user = users.find(u => u.id === player.id);
-                                const raceScore = user?.scores[race.id] || '-';
-                                return (
-                                  <td key={race.id} className="py-2 px-4 border-b text-center">
-                                    {raceScore}
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          ))
-                        }
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p>No scores recorded yet. Complete a race to see the leaderboard.</p>
-                )}
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           );
