@@ -122,7 +122,7 @@
           const [users, setUsers] = React.useState([
             { 
               id: 1, 
-              username: 'player1', 
+              username: 'scotty', 
               password: 'pass1', 
               name: 'Scotty', 
               picks: {
@@ -134,7 +134,7 @@
             },
             { 
               id: 2, 
-              username: 'player2', 
+              username: 'lina', 
               password: 'pass2', 
               name: 'Lina', 
               picks: {
@@ -146,7 +146,7 @@
             },
             { 
               id: 3, 
-              username: 'player3', 
+              username: 'steve', 
               password: 'pass3', 
               name: 'Steve', 
               picks: {
@@ -361,9 +361,9 @@
                     </div>
                     <div className="mt-6 text-sm text-gray-500">
                       <p>Demo accounts:</p>
-                      <p>Scotty: username "player1", password "pass1"</p>
-                      <p>Lina: username "player2", password "pass2"</p>
-                      <p>Steve: username "player3", password "pass3"</p>
+                      <p>Scotty: username "scotty", password "pass1"</p>
+                      <p>Lina: username "lina", password "pass2"</p>
+                      <p>Steve: username "steve", password "pass3"</p>
                     </div>
                   </div>
                 ) : (
@@ -581,9 +581,102 @@
                 )}
               </div>
               
-              {/* My Picks Display */}
+              {/* My Picks Display - only show current/upcoming races */}
               <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">My Picks</h2>
+                <h2 className="text-xl font-semibold mb-3">My Upcoming Picks</h2>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full bg-white">
+                    <thead>
+                      <tr>
+                        <th className="py-2 px-4 border-b text-left">Race</th>
+                        <th className="py-2 px-4 border-b text-left">1st Place</th>
+                        <th className="py-2 px-4 border-b text-left">2nd Place</th>
+                        <th className="py-2 px-4 border-b text-left">3rd Place</th>
+                        <th className="py-2 px-4 border-b text-left">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries(currentUser.picks)
+                        .filter(([raceId]) => !races.find(r => r.id === Number(raceId))?.completed)
+                        .length > 0 ? (
+                        Object.entries(currentUser.picks)
+                          .filter(([raceId]) => !races.find(r => r.id === Number(raceId))?.completed)
+                          .map(([raceId, racePicks]) => {
+                            const race = races.find(r => r.id === Number(raceId));
+                            return (
+                              <tr key={raceId}>
+                                <td className="py-2 px-4 border-b">Round {raceId}: {race?.name}</td>
+                                <td className="py-2 px-4 border-b">
+                                  {drivers.find(d => d.id === racePicks.first)?.name}
+                                  {drivers.find(d => d.id === racePicks.first) && 
+                                    <span 
+                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
+                                      style={{
+                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.bg || '#ccc',
+                                        color: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.text || 'black'
+                                      }}
+                                    >
+                                      {drivers.find(d => d.id === racePicks.first)?.team}
+                                    </span>
+                                  }
+                                </td>
+                                <td className="py-2 px-4 border-b">
+                                  {drivers.find(d => d.id === racePicks.second)?.name}
+                                  {drivers.find(d => d.id === racePicks.second) && 
+                                    <span 
+                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
+                                      style={{
+                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.bg || '#ccc',
+                                        color: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.text || 'black'
+                                      }}
+                                    >
+                                      {drivers.find(d => d.id === racePicks.second)?.team}
+                                    </span>
+                                  }
+                                </td>
+                                <td className="py-2 px-4 border-b">
+                                  {drivers.find(d => d.id === racePicks.third)?.name}
+                                  {drivers.find(d => d.id === racePicks.third) && 
+                                    <span 
+                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
+                                      style={{
+                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.bg || '#ccc',
+                                        color: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.text || 'black'
+                                      }}
+                                    >
+                                      {drivers.find(d => d.id === racePicks.third)?.team}
+                                    </span>
+                                  }
+                                </td>
+                                <td className="py-2 px-4 border-b">
+                                  {isRaceLocked(Number(raceId)) ? (
+                                    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
+                                      Locked
+                                    </span>
+                                  ) : (
+                                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
+                                      Editable
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })
+                      ) : (
+                        <tr>
+                          <td colSpan="5" className="py-4 text-center text-gray-500">
+                            You haven't made any picks for upcoming races. Select a race and submit your predictions!
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+              {/* Historical Picks - completed races */}
+              <div className="mb-6 p-4 bg-white rounded shadow">
+                <h2 className="text-xl font-semibold mb-3">My Historical Picks</h2>
                 <div className="overflow-x-auto">
                   <table className="min-w-full bg-white">
                     <thead>
@@ -596,64 +689,68 @@
                       </tr>
                     </thead>
                     <tbody>
-                      {Object.entries(currentUser.picks).length > 0 ? (
-                        Object.entries(currentUser.picks).map(([raceId, racePicks]) => {
-                          const race = races.find(r => r.id === Number(raceId));
-                          return (
-                            <tr key={raceId} className={race?.completed ? 'bg-gray-100' : ''}>
-                              <td className="py-2 px-4 border-b">Round {raceId}: {race?.name}</td>
-                              <td className="py-2 px-4 border-b">
-                                {drivers.find(d => d.id === racePicks.first)?.name}
-                                {drivers.find(d => d.id === racePicks.first) && 
-                                  <span 
-                                    className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                    style={{
-                                      backgroundColor: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.bg || '#ccc',
-                                      color: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.text || 'black'
-                                    }}
-                                  >
-                                    {drivers.find(d => d.id === racePicks.first)?.team}
-                                  </span>
-                                }
-                              </td>
-                              <td className="py-2 px-4 border-b">
-                                {drivers.find(d => d.id === racePicks.second)?.name}
-                                {drivers.find(d => d.id === racePicks.second) && 
-                                  <span 
-                                    className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                    style={{
-                                      backgroundColor: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.bg || '#ccc',
-                                      color: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.text || 'black'
-                                    }}
-                                  >
-                                    {drivers.find(d => d.id === racePicks.second)?.team}
-                                  </span>
-                                }
-                              </td>
-                              <td className="py-2 px-4 border-b">
-                                {drivers.find(d => d.id === racePicks.third)?.name}
-                                {drivers.find(d => d.id === racePicks.third) && 
-                                  <span 
-                                    className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                    style={{
-                                      backgroundColor: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.bg || '#ccc',
-                                      color: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.text || 'black'
-                                    }}
-                                  >
-                                    {drivers.find(d => d.id === racePicks.third)?.team}
-                                  </span>
-                                }
-                              </td>
-                              <td className="py-2 px-4 border-b font-bold">
-                                {race?.completed ? (currentUser.scores[raceId] || '-') : 'Pending'}
-                              </td>
-                            </tr>
-                          );
-                        })
+                      {Object.entries(currentUser.picks)
+                        .filter(([raceId]) => races.find(r => r.id === Number(raceId))?.completed)
+                        .length > 0 ? (
+                        Object.entries(currentUser.picks)
+                          .filter(([raceId]) => races.find(r => r.id === Number(raceId))?.completed)
+                          .map(([raceId, racePicks]) => {
+                            const race = races.find(r => r.id === Number(raceId));
+                            return (
+                              <tr key={raceId} className="bg-gray-50">
+                                <td className="py-2 px-4 border-b">Round {raceId}: {race?.name}</td>
+                                <td className="py-2 px-4 border-b">
+                                  {drivers.find(d => d.id === racePicks.first)?.name}
+                                  {drivers.find(d => d.id === racePicks.first) && 
+                                    <span 
+                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
+                                      style={{
+                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.bg || '#ccc',
+                                        color: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.text || 'black'
+                                      }}
+                                    >
+                                      {drivers.find(d => d.id === racePicks.first)?.team}
+                                    </span>
+                                  }
+                                </td>
+                                <td className="py-2 px-4 border-b">
+                                  {drivers.find(d => d.id === racePicks.second)?.name}
+                                  {drivers.find(d => d.id === racePicks.second) && 
+                                    <span 
+                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
+                                      style={{
+                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.bg || '#ccc',
+                                        color: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.text || 'black'
+                                      }}
+                                    >
+                                      {drivers.find(d => d.id === racePicks.second)?.team}
+                                    </span>
+                                  }
+                                </td>
+                                <td className="py-2 px-4 border-b">
+                                  {drivers.find(d => d.id === racePicks.third)?.name}
+                                  {drivers.find(d => d.id === racePicks.third) && 
+                                    <span 
+                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
+                                      style={{
+                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.bg || '#ccc',
+                                        color: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.text || 'black'
+                                      }}
+                                    >
+                                      {drivers.find(d => d.id === racePicks.third)?.team}
+                                    </span>
+                                  }
+                                </td>
+                                <td className="py-2 px-4 border-b font-bold">
+                                  {currentUser.scores[raceId] || '-'}
+                                </td>
+                              </tr>
+                            );
+                          })
                       ) : (
                         <tr>
                           <td colSpan="5" className="py-4 text-center text-gray-500">
-                            You haven't made any picks yet. Select a race and submit your predictions!
+                            No historical picks available yet. Completed races will appear here.
                           </td>
                         </tr>
                       )}
