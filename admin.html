@@ -638,10 +638,16 @@
                     </table>
                   </div>
                   
-                  <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded">
+                    <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded">
                     <p className="text-sm">
                       <strong>Note:</strong> Races are automatically locked one day before the race date.
                       Use these controls to manually lock/unlock races outside of the automatic schedule.
+                    </p>
+                    
+                    {/* For debugging purposes */}
+                    <p className="mt-2 text-sm">
+                      <strong>Debug Info:</strong> {users.length} users in system. 
+                      Player names: {users.map(u => u.name).join(', ')}
                     </p>
                   </div>
                 </div>
