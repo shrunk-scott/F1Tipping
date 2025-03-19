@@ -122,9 +122,9 @@
           const [users, setUsers] = React.useState([
             { 
               id: 1, 
-              username: 'scotty', 
+              username: 'player1', 
               password: 'pass1', 
-              name: 'scotty', 
+              name: 'Scotty', 
               picks: {
                 1: { first: 7, second: 1, third: 8 }
               }, 
@@ -134,9 +134,9 @@
             },
             { 
               id: 2, 
-              username: 'lina', 
+              username: 'player2', 
               password: 'pass2', 
-              name: 'lina', 
+              name: 'Lina', 
               picks: {
                 1: { first: 3, second: 8, third: 1 }
               }, 
@@ -146,9 +146,9 @@
             },
             { 
               id: 3, 
-              username: 'steve', 
+              username: 'player3', 
               password: 'pass3', 
-              name: 'steve', 
+              name: 'Steve', 
               picks: {
                 1: { first: 3, second: 8, third: 4 }
               }, 
@@ -284,13 +284,18 @@
             }
             
             // Calculate leaderboard based on existing data
+            updateLeaderboard();
+          }, []);
+          
+          // Update leaderboard
+          const updateLeaderboard = () => {
             const board = users.map(user => {
               const totalScore = Object.values(user.scores).reduce((sum, score) => sum + score, 0);
               return { id: user.id, name: user.name, score: totalScore };
             });
             board.sort((a, b) => a.score - b.score);
             setLeaderboard(board);
-          }, []);
+          };
           
           // Save data to localStorage when state changes
           React.useEffect(() => {
@@ -298,16 +303,20 @@
               users: users,
               races: races
             }));
+            
+            // Update leaderboard whenever users or races change
+            updateLeaderboard();
           }, [users, races]);
 
-          // Login/Register Form
+          // Login Form - forcing login to access the app
           if (!isLoggedIn) {
             return (
               <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8 mt-10">
                 {!showRegister ? (
                   // Login Form
                   <div>
-                    <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+                    <h2 className="text-2xl font-bold mb-6 text-center">Login Required</h2>
+                    <p className="mb-4 text-gray-600">Please log in to access the F1 2025 Tipping Competition. You can only view and modify your own picks after logging in.</p>
                     <div className="mb-4">
                       <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
                         Username
@@ -352,8 +361,9 @@
                     </div>
                     <div className="mt-6 text-sm text-gray-500">
                       <p>Demo accounts:</p>
-                      <p>Username: user1, Password: pass1</p>
-                      <p>Username: user2, Password: pass2</p>
+                      <p>Scotty: username "player1", password "pass1"</p>
+                      <p>Lina: username "player2", password "pass2"</p>
+                      <p>Steve: username "player3", password "pass3"</p>
                     </div>
                   </div>
                 ) : (
