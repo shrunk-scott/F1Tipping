@@ -163,59 +163,46 @@
           const [picks, setPicks] = React.useState({ first: null, second: null, third: null });
           const [leaderboard, setLeaderboard] = React.useState([]);
 
-          // Handle login
+          // Authentication functions
           const handleLogin = () => {
-            // Clear whitespace and convert to lowercase for consistency
-            const username = loginUsername.trim().toLowerCase();
-            const user = users.find(u => u.username.toLowerCase() === username && u.password === loginPassword);
-            
+            const user = users.find(u => u.username === loginUsername && u.password === loginPassword);
             if (user) {
               setCurrentUser(user);
               setIsLoggedIn(true);
               setLoginUsername('');
               setLoginPassword('');
-              console.log("Logged in as:", user.name);
             } else {
               alert('Invalid username or password');
             }
           };
 
-          // Handle register
           const handleRegister = () => {
             if (!registerUsername || !registerPassword || !registerName) {
               alert('Please fill in all fields');
               return;
             }
-            
-            // Clean up username - lowercase, no spaces
-            const username = registerUsername.trim().toLowerCase();
-            
+
             // Check if username already exists
-            if (users.some(u => u.username.toLowerCase() === username)) {
+            if (users.some(u => u.username === registerUsername)) {
               alert('Username already exists');
               return;
             }
 
             const newUser = {
-              id: Math.max(...users.map(u => u.id), 0) + 1,
-              username: username,
+              id: users.length + 1,
+              username: registerUsername,
               password: registerPassword,
-              name: registerName.trim(), // Clean up name too, but preserve case
+              name: registerName,
               picks: {},
               scores: {}
             };
 
-            const updatedUsers = [...users, newUser];
-            setUsers(updatedUsers);
+            setUsers([...users, newUser]);
             setRegisterUsername('');
             setRegisterPassword('');
             setRegisterName('');
             setShowRegister(false);
             alert('Registration successful! You can now log in.');
-            
-            // Debug
-            console.log("New user registered:", newUser.name);
-            console.log("Total users now:", updatedUsers.length);
           };
 
           const handleLogout = () => {
