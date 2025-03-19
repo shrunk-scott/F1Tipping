@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F1 2025 Tipping Competition - Admin</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React and ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel for JSX support -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        /* Additional custom styles */
+        body {
+            background-color: #f1f5f9;
+        }
+        .f1-header {
+            background-image: linear-gradient(to right, #e10600, #ff0100);
+            color: white;
+        }
+        .admin-header {
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header section -->
+    <header class="admin-header p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold">F1 2025 Tipping Competition - Admin Panel</h1>
+            <a href="index.html" class="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded">Return to Main Site</a>
+        </div>
+    </header>
+
+    <!-- Main app container -->
+    <div id="root" class="container mx-auto py-6"></div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>© 2025 F1 Tipping Competition - Administrator Access</p>
+        </div>
+    </footer>
+
+    <!-- Admin app script -->
+    <script type="text/babel">
+        const AdminApp = () => {
+          // Team colors for styling
+          const teamColors = {
+            'Red Bull': { bg: '#0600EF', text: 'white' },
+            'Ferrari': { bg: '#F91536', text: 'white' },
+            'Mercedes': { bg: '#00D2BE', text: 'black' },
+            'McLaren': { bg: '#FF8700', text: 'black' },
+            'Aston Martin': { bg: '#006F62', text: 'white' },
+            'Alpine': { bg: '#0090FF', text: 'white' },
+            'Williams': { bg: '#005AFF', text: 'white' },
+            'Racing Bulls': { bg: '#1E41FF', text: 'white' },
+            'Haas': { bg: '#B6BABD', text: 'black' },
+            'Sauber': { bg: '#52E252', text: 'black' }
+          };
+
+          // State management
+          const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+          const [password, setPassword] = React.useState('');
+          const [drivers, setDrivers] = React.useState([]);
+          const [races, setRaces] = React.useState([]);
+          const [users, setUsers] = React.useState([]);
+          const [resultRace, setResultRace] = React.useState(null);
+          const [raceResults, setRaceResults] = React.useState([]);
+          const [editMode, setEditMode] = React.useState('results'); // 'results' or 'locks'
+          
+          // Load data from localStorage on component mount
+          React.useEffect(() => {
+            const savedData = localStorage.getItem('f1TippingData');
+            if (savedData) {
+              const data = JSON.parse(savedData);
+              setUsers(data.users || []);
+              setRaces(data.races || []);
+            }
+            
+            // Set drivers list
+            setDrivers([
+              { id: 1, name: 'Max Verstappen', team: 'Red Bull' },
+              { id: 2, name: 'Liam Lawson', team: 'Red Bull' },
+              { id: 3, name: 'Charles Leclerc', team: 'Ferrari' },
+              { id: 4, name: 'Lewis Hamilton', team: 'Ferrari' },
+              { id: 5, name: 'Kimi Antonelli', team: 'Mercedes' },
+              { id: 6, name: 'George Russell', team: 'Mercedes' },
+              { id: 7, name: 'Lando Norris', team: 'McLaren' },
+              { id: 8, name: 'Oscar Piastri', team: 'McLaren' },
+              { id: 9, name: 'Lance Stroll', team: 'Aston Martin' },
+              { id: 10, name: 'Fernando Alonso', team: 'Aston Martin' },
+              { id: 11, name: 'Pierre Gasly', team: 'Alpine' },
+              { id: 12, name: 'Jack Doohan', team: 'Alpine' },
+              { id: 13, name: 'Alex Albon', team: 'Williams' },
+              { id: 14, name: 'Carlos Sainz', team: 'Williams' },
+              { id: 15, name: 'Yuki Tsunoda', team: 'Racing Bulls' },
+              { id: 16, name: 'Isack Hadjar', team: 'Racing Bulls' },
+              { id: 17, name: 'Oliver Bearman', team: 'Haas' },
+              { id: 18, name: 'Esteban Ocon', team: 'Haas' },
+              { id: 19, name: 'Nico Hülkenberg', team: 'Sauber' },
+              { id: 20, name: 'Gabriel Bortoleto', team: 'Sauber' },
+            ]);
+          }, []);
+          
+          // Save data to localStorage when state changes
+          React.useEffect(() => {
+            if (races.length > 0 && users.length > 0) {
+              localStorage.setItem('f1TippingData', JSON.stringify({
+                users: users,
+                races: races
+              }));
+            }
+          }, [users, races]);
+          
+          // Handle admin login
+          const handleLogin = () => {
+            // Simple password check - in a real app this would be more secure
+            if (password === 'admin123') {
+              setIsLoggedIn(true);
+              setPassword('');
+            } else {
+              alert('Incorrect password');
+            }
+          };
+          
+          // Prepare results array when race changes
+          React.useEffect(() => {
+            if (isLoggedIn && resultRace) {
+              const race = races.find(r => r.id === resultRace);
+              if (race && !race.completed) {
+                // Create an array of driver IDs that can be reordered
+                setRaceResults(drivers.map(driver => driver.id));
+              } else if (race && race.completed) {
+                // If race is already completed, load existing results
+                setRaceResults(race.results || []);
+              }
+            }
+          }, [resultRace, isLoggedIn, drivers, races]);
+          
+          // Move a driver up in the results order
+          const moveDriverUp = (index) => {
+            if (index <= 0) return;
+            const newResults = [...raceResults];
+            [newResults[index], newResults[index - 1]] = [newResults[index - 1], newResults[index]];
+            setRaceResults(newResults);
+          };
+
+          // Move a driver down in the results order
+          const moveDriverDown = (index) => {
+            if (index >= raceResults.length - 1) return;
+            const newResults = [...raceResults];
+            [newResults[index], newResults[index + 1]] = [newResults[index + 1], newResults[index]];
+            setRaceResults(newResults);
+          };
+          
+          // Enter race results
+          const enterRaceResults = () => {
+            if (!resultRace) {
+              alert("Please select a race first");
+              return;
+            }
+            
+            if (raceResults.length !== drivers.length) {
+              alert("Please ensure all drivers are included in the results");
+              return;
+            }
+
+            // Update race with results
+            const updatedRaces = races.map(race => {
+              if (race.id === resultRace) {
+                return { ...race, completed: true, results: [...raceResults] };
+              }
+              return race;
+            });
+            
+            setRaces(updatedRaces);
+            
+            // Calculate scores for users
+            calculateScores(resultRace, raceResults);
+            
+            alert(`Results for ${races.find(r => r.id === resultRace)?.name} have been saved!`);
+          };
+          
+          // Calculate scores for all users for a specific race
+          const calculateScores = (raceId, results) => {
+            const updatedUsers = users.map(user => {
+              const userPicks = user.picks[raceId];
+              if (!userPicks) return user;
+
+              // Calculate points
+              const firstPoints = calculatePoints(1, results.findIndex(driverId => driverId === userPicks.first) + 1);
+              const secondPoints = calculatePoints(2, results.findIndex(driverId => driverId === userPicks.second) + 1);
+              const thirdPoints = calculatePoints(3, results.findIndex(driverId => driverId === userPicks.third) + 1);
+              
+              const totalPoints = firstPoints + secondPoints + thirdPoints;
+              
+              const updatedScores = { ...user.scores };
+              updatedScores[raceId] = totalPoints;
+              
+              return { ...user, scores: updatedScores };
+            });
+
+            setUsers(updatedUsers);
+          };
+
+          // Calculate points based on actual finishing position
+          const calculatePoints = (predictedPosition, actualPosition) => {
+            if (actualPosition === null) return 0;
+            return Math.abs(predictedPosition - actualPosition);
+          };
+          
+          // Check if race is locked
+          const isRaceLocked = (raceId) => {
+            const race = races.find(r => r.id === raceId);
+            if (!race) return true;
+            
+            // Race is locked if completed
+            if (race.completed) return true;
+            
+            // Race is locked if it's in the past
+            const raceDate = new Date(race.date);
+            const now = new Date();
+            const deadline = new Date(raceDate);
+            deadline.setDate(deadline.getDate() - 1); // Lock 1 day before race
+            
+            return now > deadline;
+          };
+          
+          // Lock race submissions
+          const lockRace = (raceId) => {
+            const updatedRaces = races.map(r => {
+              if (r.id === raceId) {
+                // Force lock by setting date to today
+                const today = new Date();
+                return { ...r, date: today.toISOString().split('T')[0] };
+              }
+              return r;
+            });
+            setRaces(updatedRaces);
+          };
+          
+          // Unlock race submissions
+          const unlockRace = (raceId) => {
+            const updatedRaces = races.map(r => {
+              if (r.id === raceId) {
+                // Set date to future to unlock
+                const futureDate = new Date();
+                futureDate.setDate(futureDate.getDate() + 7);
+                return { ...r, date: futureDate.toISOString().split('T')[0] };
+              }
+              return r;
+            });
+            setRaces(updatedRaces);
+          };
+          
+          // View player picks for a race
+          const getPlayerPicksForRace = (raceId) => {
+            return users.filter(user => user.picks[raceId]).map(user => ({
+              userId: user.id,
+              name: user.name,
+              picks: user.picks[raceId],
+              score: user.scores[raceId] || '-'
+            }));
+          };
+
+          // Login Form
+          if (!isLoggedIn) {
+            return (
+              <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8 mt-10">
+                <div className="md:flex">
+                  <div className="p-8 w-full">
+                    <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold mb-1">Admin Access Required</div>
+                    <h2 className="block mt-1 text-lg leading-tight font-medium text-black mb-6">Please enter the admin password</h2>
+                    <div className="mb-4">
+                      <input 
+                        type="password" 
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" 
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <button 
+                        className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                        type="button"
+                        onClick={handleLogin}
+                      >
+                        Sign In
+                      </button>
+                      <a className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="index.html">
+                        Return to Main Site
+                      </a>
+                    </div>
+                    <p className="text-gray-500 text-xs mt-6">Default password: admin123</p>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+
+          // Admin Interface
+          return (
+            <div className="p-6 max-w-6xl mx-auto">
+              <div className="flex justify-between mb-6">
+                <h1 className="text-2xl font-bold">F1 2025 Admin Panel</h1>
+                <button 
+                  className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                  onClick={() => setIsLoggedIn(false)}
+                >
+                  Logout
+                </button>
+              </div>
+              
+              {/* Admin Mode Selection */}
+              <div className="mb-6 bg-white rounded shadow">
+                <div className="flex border-b">
+                  <button 
+                    className={`py-3 px-6 ${editMode === 'results' ? 'bg-gray-200 font-bold' : 'hover:bg-gray-100'}`}
+                    onClick={() => setEditMode('results')}
+                  >
+                    Enter Race Results
+                  </button>
+                  <button 
+                    className={`py-3 px-6 ${editMode === 'locks' ? 'bg-gray-200 font-bold' : 'hover:bg-gray-100'}`}
+                    onClick={() => setEditMode('locks')}
+                  >
+                    Manage Submission Locks
+                  </button>
+                  <button 
+                    className={`py-3 px-6 ${editMode === 'players' ? 'bg-gray-200 font-bold' : 'hover:bg-gray-100'}`}
+                    onClick={() => setEditMode('players')}
+                  >
+                    View Player Picks
+                  </button>
+                </div>
+              </div>
+              
+              {/* Race Results Entry */}
+              {editMode === 'results' && (
+                <div className="mb-6 bg-white rounded shadow p-4">
+                  <h2 className="text-xl font-semibold mb-3">Enter Race Results</h2>
+                  
+                  <div className="mb-4">
+                    <label className="block mb-2 font-medium">Select Race:</label>
+                    <select
+                      className="w-full p-2 border rounded mb-4"
+                      value={resultRace || ''}
+                      onChange={(e) => setResultRace(Number(e.target.value))}
+                    >
+                      <option value="">-- Select a race --</option>
+                      {races.map(race => (
+                        <option 
+                          key={race.id} 
+                          value={race.id}
+                          disabled={race.completed}
+                        >
+                          Round {race.id}: {race.name} {race.completed ? '(Completed)' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {resultRace && !races.find(r => r.id === resultRace)?.completed ? (
+                    <>
+                      <p className="mb-4">Arrange drivers to set the finishing order (1st position at top)</p>
+                      <div className="border rounded mb-4 overflow-hidden">
+                        {raceResults.map((driverId, index) => {
+                          const driver = drivers.find(d => d.id === driverId);
+                          return (
+                            <div 
+                              key={driverId} 
+                              className="flex items-center p-2 border-b last:border-b-0"
+                              style={{
+                                backgroundColor: index < 3 ? '#f0f9ff' : 'white'
+                              }}
+                            >
+                              <div className="font-bold w-8 text-center">{index + 1}</div>
+                              <div className="flex-1 flex items-center">
+                                <span 
+                                  className="inline-block w-3 h-3 rounded-full mr-2"
+                                  style={{
+                                    backgroundColor: teamColors[driver?.team]?.bg || '#ccc'
+                                  }}
+                                ></span>
+                                {driver?.name} ({driver?.team})
+                              </div>
+                              <div className="flex gap-1">
+                                <button 
+                                  className="p-1 bg-gray-200 rounded" 
+                                  onClick={() => moveDriverUp(index)}
+                                  disabled={index === 0}
+                                >
+                                  ↑
+                                </button>
+                                <button 
+                                  className="p-1 bg-gray-200 rounded" 
+                                  onClick={() => moveDriverDown(index)}
+                                  disabled={index === raceResults.length - 1}
+                                >
+                                  ↓
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <button
+                        className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded w-full"
+                        onClick={enterRaceResults}
+                      >
+                        Save Race Results
+                      </button>
+                    </>
+                  ) : resultRace ? (
+                    <div className="p-4 bg-yellow-100 rounded">
+                      This race has already been completed. Select a different race to enter results.
+                    </div>
+                  ) : (
+                    <div className="p-4 bg-blue-100 rounded">
+                      Please select a race to enter results.
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Race Locks Management */}
+              {editMode === 'locks' && (
+                <div className="mb-6 bg-white rounded shadow p-4">
+                  <h2 className="text-xl font-semibold mb-3">Manage Race Submission Locks</h2>
+                  
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white">
+                      <thead>
+                        <tr>
+                          <th className="py-2 px-4 border-b text-left">Round</th>
+                          <th className="py-2 px-4 border-b text-left">Race</th>
+                          <th className="py-2 px-4 border-b text-left">Date</th>
+                          <th className="py-2 px-4 border-b text-left">Status</th>
+                          <th className="py-2 px-4 border-b text-left">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {races.filter(race => !race.completed).map(race => {
+                          const isLocked = isRaceLocked(race.id);
+                          
+                          return (
+                            <tr key={race.id} className={isLocked ? 'bg-yellow-50' : ''}>
+                              <td className="py-2 px-4 border-b">{race.id}</td>
+                              <td className="py-2 px-4 border-b">{race.name}</td>
+                              <td className="py-2 px-4 border-b">{new Date(race.date).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</td>
+                              <td className="py-2 px-4 border-b">
+                                {isLocked ? (
+                                  <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
+                                    Locked
+                                  </span>
+                                ) : (
+                                  <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
+                                    Open
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-2 px-4 border-b">
+                                <div className="flex gap-2">
+                                  <button
+                                    className="px-3 py-1 bg-yellow-500 text-white rounded text-sm"
+                                    onClick={() => lockRace(race.id)}
+                                    disabled={isLocked}
+                                  >
+                                    Lock
+                                  </button>
+                                  <button
+                                    className="px-3 py-1 bg-green-500 text-white rounded text-sm"
+                                    onClick={() => unlockRace(race.id)}
+                                    disabled={!isLocked}
+                                  >
+                                    Unlock
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  
+                  <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded">
+                    <p className="text-sm">
+                      <strong>Note:</strong> Races are automatically locked one day before the race date.
+                      Use these controls to manually lock/unlock races outside of the automatic schedule.
+                    </p>
+                  </div>
+                </div>
+              )}
+              
+              {/* Player Picks Viewer */}
+              {editMode === 'players' && (
+                <div className="mb-6 bg-white rounded shadow p-4">
+                  <h2 className="text-xl font-semibold mb-3">View Player Picks</h2>
+                  
+                  <div className="mb-4">
+                    <label className="block mb-2 font-medium">Select Race:</label>
+                    <select
+                      className="w-full p-2 border rounded mb-4"
+                      value={resultRace || ''}
+                      onChange={(e) => setResultRace(Number(e.target.value))}
+                    >
+                      <option value="">-- Select a race --</option>
+                      {races.map(race => (
+                        <option 
+                          key={race.id} 
+                          value={race.id}
+                        >
+                          Round {race.id}: {race.name} {race.completed ? '(Completed)' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  {resultRace ? (
+                    <div className="overflow-x-auto">
+                      <h3 className="font-semibold mb-2">
+                        Player Picks for {races.find(r => r.id === resultRace)?.name}
+                        {races.find(r => r.id === resultRace)?.completed ? ' (Completed)' : ''}
+                      </h3>
+                      
+                      {getPlayerPicksForRace(resultRace).length > 0 ? (
+                        <table className="min-w-full bg-white">
+                          <thead>
+                            <tr>
+                              <th className="py-2 px-4 border-b text-left">Player</th>
+                              <th className="py-2 px-4 border-b text-left">1st Place</th>
+                              <th className="py-2 px-4 border-b text-left">2nd Place</th>
+                              <th className="py-2 px-4 border-b text-left">3rd Place</th>
+                              <th className="py-2 px-4 border-b text-left">Score</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {getPlayerPicksForRace(resultRace).map(player => (
+                              <tr key={player.userId}>
+                                <td className="py-2 px-4 border-b">{player.name}</td>
+                                <td className="py-2 px-4 border-b">
+                                  {drivers.find(d => d.id === player.picks.first)?.name}
+                                  {drivers.find(d => d.id === player.picks.first) && 
+                                    <span 
+                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
+                                      style={{
+                                        backgroundColor: teamColors[drivers.find(d => d.id === player.picks.first)?.team]?.bg || '#ccc',
+                                        color: teamColors[drivers.find(d => d.id === player.picks.first)?.team]?.text || 'black'
+                                      }}
+                                    >
+                                      {drivers.find(d => d.id === player.picks.first)?.team}
+                                    </span>
+                                  }
+                                </td>
+                                <td className="py-2 px-4 border-b">
+                                  {drivers.find(d => d.id === player.picks.second)?.name}
+                                  {drivers.find(d => d.id === player.picks.second) && 
+                                    <span 
+                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
+                                      style={{
+                                        backgroundColor: teamColors[drivers.find(d => d.id === player.picks.second)?.team]?.bg || '#ccc',
+                                        color: teamColors[drivers.find(d => d.id === player.picks.second)?.team]?.text || 'black'
+                                      }}
+                                    >
+                                      {drivers.find(d => d.id === player.picks.second)?.team}
+                                    </span>
+                                  }
+                                </td>
+                                <td className="py-2 px-4 border-b">
+                                  {drivers.find(d => d.id === player.picks.third)?.name}
+                                  {drivers.find(d => d.id === player.picks.third) && 
+                                    <span 
+                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
+                                      style={{
+                                        backgroundColor: teamColors[drivers.find(d => d.id === player.picks.third)?.team]?.bg || '#ccc',
+                                        color: teamColors[drivers.find(d => d.id === player.picks.third)?.team]?.text || 'black'
+                                      }}
+                                    >
+                                      {drivers.find(d => d.id === player.picks.third)?.team}
+                                    </span>
+                                  }
+                                </td>
+                                <td className="py-2 px-4 border-b font-bold">{player.score}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : (
+                        <div className="p-4 bg-yellow-100 rounded">
+                          No player picks found for this race.
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="p-4 bg-blue-100 rounded">
+                      Please select a race to view player picks.
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Completed Races Results */}
+              <div className="mb-6 bg-white rounded shadow p-4">
+                <h2 className="text-xl font-semibold mb-3">Completed Race Results</h2>
+                
+                {races.filter(race => race.completed).length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full bg-white">
+                      <thead>
+                        <tr>
+                          <th className="py-2 px-4 border-b text-left">Race</th>
+                          <th className="py-2 px-4 border-b text-center">1st</th>
+                          <th className="py-2 px-4 border-b text-center">2nd</th>
+                          <th className="py-2 px-4 border-b text-center">3rd</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {races.filter(race => race.completed).map(race => (
+                          <tr key={race.id}>
+                            <td className="py-2 px-4 border-b">Round {race.id}: {race.name}</td>
+                            <td className="py-2 px-4 border-b text-center">
+                              {race.results && race.results[0] && (
+                                <div className="flex items-center justify-center">
+                                  <span 
+                                    className="inline-block w-3 h-3 rounded-full mr-2"
+                                    style={{
+                                      backgroundColor: teamColors[drivers.find(d => d.id === race.results[0])?.team]?.bg || '#ccc'
+                                    }}
+                                  ></span>
+                                  {drivers.find(d => d.id === race.results[0])?.name}
+                                </div>
+                              )}
+                            </td>
+                            <td className="py-2 px-4 border-b text-center">
+                              {race.results && race.results[1] && (
+                                <div className="flex items-center justify-center">
+                                  <span 
+                                    className="inline-block w-3 h-3 rounded-full mr-2"
+                                    style={{
+                                      backgroundColor: teamColors[drivers.find(d => d.id === race.results[1])?.team]?.bg || '#ccc'
+                                    }}
+                                  ></span>
+                                  {drivers.find(d => d.id === race.results[1])?.name}
+                                </div>
+                              )}
+                            </td>
+                            <td className="py-2 px-4 border-b text-center">
+                              {race.results && race.results[2] && (
+                                <div className="flex items-center justify-center">
+                                  <span 
+                                    className="inline-block w-3 h-3 rounded-full mr-2"
+                                    style={{
+                                      backgroundColor: teamColors[drivers.find(d => d.id === race.results[2])?.team]?.bg || '#ccc'
+                                    }}
+                                  ></span>
+                                  {drivers.find(d => d.id === race.results[2])?.name}
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p>No races have been completed yet.</p>
+                )}
+              </div>
+            </div>
+          );
+        };
+
+        // Mount the React app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AdminApp />);
+    </script>
+</body>
+</html>
