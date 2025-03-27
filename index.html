@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Shrunk F1 2025 Tipping Competition</title>
+  <title>F1 2025 Tipping Competition</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -28,7 +28,7 @@
   <!-- Header -->
   <header class="f1-header p-4 shadow-md">
     <div class="container mx-auto">
-      <h1 class="text-3xl font-bold">Shrunk F1 2025 Tipping Competition</h1>
+      <h1 class="text-3xl font-bold">F1 2025 Tipping Competition</h1>
     </div>
   </header>
 
@@ -39,46 +39,37 @@
       <h2 class="text-2xl font-bold mb-6 text-center">Login Required</h2>
       <p class="mb-4 text-gray-600">Please log in to access the F1 2025 Tipping Competition.</p>
       <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-          Username
-        </label>
-        <input
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="username"
-          type="text"
-          placeholder="Username"
-        />
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Username</label>
+        <input id="username" type="text" placeholder="Username"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
       </div>
       <div class="mb-6">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-          Password
-        </label>
-        <input
-          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="password"
-          type="password"
-          placeholder="Password"
-        />
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password</label>
+        <input id="password" type="password" placeholder="Password"
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
       </div>
       <div class="flex items-center justify-between">
-        <button
-          id="loginButton"
+        <button id="loginButton"
           class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          type="button"
-        >
+          type="button">
           Sign In
         </button>
       </div>
+      <div class="mt-6 text-sm text-gray-500">
+        <p>Demo accounts:</p>
+        <p>Scotty: username "scotty", password "pass1"</p>
+        <p>Lina: username "lina", password "pass2"</p>
+        <p>Steve: username "steve", password "pass3"</p>
+      </div>
+    </div>
 
     <!-- Main App (hidden until login) -->
     <div id="mainApp" class="hidden">
       <!-- User Bar -->
       <div class="flex justify-between items-center mb-6 bg-white p-4 rounded shadow">
         <h2 class="text-xl font-semibold">Welcome, <span id="userName">User</span>!</h2>
-        <button 
-          class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded"
-          id="logoutButton"
-        >
+        <button id="logoutButton"
+          class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">
           Logout
         </button>
       </div>
@@ -97,7 +88,7 @@
               </tr>
             </thead>
             <tbody id="leaderboardBody">
-              <!-- Leaderboard rows will be generated dynamically -->
+              <!-- Leaderboard rows generated dynamically -->
             </tbody>
           </table>
         </div>
@@ -126,11 +117,11 @@
 
       <!-- Driver Selection for Race Picks -->
       <div class="mb-6 p-4 bg-white rounded shadow">
-        <h2 class="text-xl font-semibold mb-3" id="racePicksTitle">Pick Drivers for Race</h2>
+        <h2 id="racePicksTitle" class="text-xl font-semibold mb-3">Pick Drivers for Race</h2>
         <!-- First Place -->
         <div class="mb-4">
           <label class="block mb-2 font-medium">1st Place</label>
-          <select class="w-full p-2 border rounded" id="firstPlace">
+          <select id="firstPlace" class="w-full p-2 border rounded">
             <option value="">Select a driver</option>
             <!-- Options generated dynamically -->
           </select>
@@ -138,18 +129,19 @@
         <!-- Second Place -->
         <div class="mb-4">
           <label class="block mb-2 font-medium">2nd Place</label>
-          <select class="w-full p-2 border rounded" id="secondPlace">
+          <select id="secondPlace" class="w-full p-2 border rounded">
             <option value="">Select a driver</option>
           </select>
         </div>
         <!-- Third Place -->
         <div class="mb-4">
           <label class="block mb-2 font-medium">3rd Place</label>
-          <select class="w-full p-2 border rounded" id="thirdPlace">
+          <select id="thirdPlace" class="w-full p-2 border rounded">
             <option value="">Select a driver</option>
           </select>
         </div>
-        <button class="px-4 py-2 bg-blue-500 text-white rounded w-full" id="savePicksButton">
+        <button id="savePicksButton"
+          class="px-4 py-2 bg-blue-500 text-white rounded w-full">
           Save Picks
         </button>
       </div>
@@ -212,7 +204,7 @@
     let currentUser = null;
     let currentRace = null;
 
-    // Load data from JSON files using GitHub raw URLs
+    // Load data from JSON files using raw GitHub URLs
     async function loadData() {
       try {
         const playersRes = await fetch('https://raw.githubusercontent.com/shrunk-scott/F1Tipping/main/players.json');
@@ -264,7 +256,6 @@
       ['firstPlace', 'secondPlace', 'thirdPlace'].forEach(selectId => {
         const selectEl = document.getElementById(selectId);
         selectEl.innerHTML = '<option value="">Select a driver</option>';
-        // Group drivers by team (optional)
         const teams = {};
         drivers.forEach(driver => {
           if (!teams[driver.team]) teams[driver.team] = [];
@@ -284,11 +275,10 @@
       });
     }
 
-    // Update leaderboard (lowest score is best)
+    // Update leaderboard (lower score is better)
     function updateLeaderboard() {
       const leaderboardBody = document.getElementById('leaderboardBody');
       leaderboardBody.innerHTML = '';
-      // Sort players by Round 1 score (assuming lower is better)
       const sortedPlayers = [...players].sort((a, b) => (a.scores['1'] || Infinity) - (b.scores['1'] || Infinity));
       sortedPlayers.forEach((player, index) => {
         const tr = document.createElement('tr');
@@ -327,7 +317,7 @@
       });
     }
 
-    // Helper to render driver badge
+    // Helper: Render a driver badge
     function renderDriverBadge(driverId) {
       const driver = drivers.find(d => d.id === driverId);
       if (!driver) return '';
@@ -337,8 +327,13 @@
               </div>`;
     }
 
-    // Login using players data
+    // Login function using players data
     function login() {
+      // Ensure data has loaded before allowing login
+      if (!players.length) {
+        alert("Data is still loading. Please try again in a moment.");
+        return;
+      }
       const username = document.getElementById('username').value.trim().toLowerCase();
       const password = document.getElementById('password').value;
       const user = players.find(u => u.username.toLowerCase() === username && u.password === password);
@@ -400,7 +395,7 @@
       loadHistoricalPicks();
     }
 
-    // Load historical picks for current user (assumes Round 1 for demo)
+    // Load historical picks for current user (demo uses Round 1)
     function loadHistoricalPicks() {
       const historicalTable = document.getElementById('historicalPicks');
       historicalTable.innerHTML = '';
@@ -459,6 +454,7 @@
       }
     }
 
+    // Attach event listeners
     document.getElementById('loginButton').addEventListener('click', login);
     document.getElementById('logoutButton').addEventListener('click', logout);
     document.getElementById('savePicksButton').addEventListener('click', savePicks);
@@ -466,6 +462,7 @@
       if (e.key === 'Enter') login();
     });
 
+    // On page load, fetch data
     document.addEventListener('DOMContentLoaded', loadData);
   </script>
 </body>
