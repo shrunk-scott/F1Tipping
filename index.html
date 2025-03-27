@@ -1,549 +1,464 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F1 2025 Tipping Competition</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background-color: #f1f5f9;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
-        }
-        .f1-header {
-            background-image: linear-gradient(to right, #e10600, #ff0100);
-            color: white;
-        }
-        .team-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-            margin-left: 8px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>F1 2025 Tipping Competition</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    }
+    .f1-header {
+      background-image: linear-gradient(to right, #e10600, #ff0100);
+      color: white;
+    }
+    .team-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      margin-left: 8px;
+    }
+  </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="f1-header p-4 shadow-md">
-        <div class="container mx-auto">
-            <h1 class="text-3xl font-bold">F1 2025 Tipping Competition</h1>
-        </div>
-    </header>
+  <!-- Header -->
+  <header class="f1-header p-4 shadow-md">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-bold">F1 2025 Tipping Competition</h1>
+    </div>
+  </header>
 
-    <!-- Main Content -->
-    <div class="container mx-auto py-6">
-        <!-- Login Form -->
-        <div id="loginForm" class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8 mb-8">
-            <h2 class="text-2xl font-bold mb-6 text-center">Login Required</h2>
-            <p class="mb-4 text-gray-600">Please log in to access the F1 2025 Tipping Competition.</p>
-            
-            <div class="mb-4">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
-                    Username
-                </label>
-                <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="username"
-                    type="text"
-                    placeholder="Username"
-                />
-            </div>
-            
-            <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
-                    Password
-                </label>
-                <input
-                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="password"
-                    type="password"
-                    placeholder="Password"
-                />
-            </div>
-            
-            <div class="flex items-center justify-between">
-                <button
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    type="button"
-                    onclick="login()"
-                >
-                    Sign In
-                </button>
-            </div>
-            
-            <div class="mt-6 text-sm text-gray-500">
-                <p>Demo accounts:</p>
-                <p>Scotty: username "scotty", password "pass1"</p>
-                <p>Lina: username "lina", password "pass2"</p>
-                <p>Steve: username "steve", password "pass3"</p>
-            </div>
-        </div>
-
-        <!-- Main App (hidden until login) -->
-        <div id="mainApp" class="hidden">
-            <!-- User bar -->
-            <div class="flex justify-between items-center mb-6 bg-white p-4 rounded shadow">
-                <h2 class="text-xl font-semibold">Welcome, <span id="userName">User</span>!</h2>
-                <button 
-                    class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded"
-                    onclick="logout()"
-                >
-                    Logout
-                </button>
-            </div>
-            
-            <!-- Leaderboard -->
-            <div class="p-4 bg-white rounded shadow mb-6">
-                <h2 class="text-xl font-semibold mb-3">Leaderboard</h2>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white">
-                        <thead>
-                            <tr>
-                                <th class="py-2 px-4 border-b text-left">Position</th>
-                                <th class="py-2 px-4 border-b text-left">Player</th>
-                                <th class="py-2 px-4 border-b text-left">Total Score</th>
-                                <th class="py-2 px-4 border-b text-center">R1</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="bg-yellow-100" id="player1Row">
-                                <td class="py-2 px-4 border-b">1</td>
-                                <td class="py-2 px-4 border-b">Scotty</td>
-                                <td class="py-2 px-4 border-b font-bold">6</td>
-                                <td class="py-2 px-4 border-b text-center">6</td>
-                            </tr>
-                            <tr id="player2Row">
-                                <td class="py-2 px-4 border-b">2</td>
-                                <td class="py-2 px-4 border-b">Lina</td>
-                                <td class="py-2 px-4 border-b font-bold">15</td>
-                                <td class="py-2 px-4 border-b text-center">15</td>
-                            </tr>
-                            <tr id="player3Row">
-                                <td class="py-2 px-4 border-b">3</td>
-                                <td class="py-2 px-4 border-b">Steve</td>
-                                <td class="py-2 px-4 border-b font-bold">21</td>
-                                <td class="py-2 px-4 border-b text-center">21</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Race Selection -->
-            <div class="mb-6 p-4 bg-white rounded shadow">
-                <h2 class="text-xl font-semibold mb-3">Select Race</h2>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white">
-                        <thead>
-                            <tr>
-                                <th class="py-2 px-4 border-b text-left">Round</th>
-                                <th class="py-2 px-4 border-b text-left">Race</th>
-                                <th class="py-2 px-4 border-b text-left">Circuit</th>
-                                <th class="py-2 px-4 border-b text-left">Date</th>
-                                <th class="py-2 px-4 border-b text-left">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="bg-gray-100">
-                                <td class="py-2 px-4 border-b">1</td>
-                                <td class="py-2 px-4 border-b">Australian Grand Prix</td>
-                                <td class="py-2 px-4 border-b">Albert Park</td>
-                                <td class="py-2 px-4 border-b">Mar 16, 2025</td>
-                                <td class="py-2 px-4 border-b">
-                                    <button class="px-4 py-1 rounded bg-gray-400 text-white line-through opacity-50" disabled>
-                                        Completed
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="bg-blue-100">
-                                <td class="py-2 px-4 border-b">2</td>
-                                <td class="py-2 px-4 border-b">Chinese Grand Prix</td>
-                                <td class="py-2 px-4 border-b">Shanghai International Circuit</td>
-                                <td class="py-2 px-4 border-b">Mar 23, 2025</td>
-                                <td class="py-2 px-4 border-b">
-                                    <button class="px-4 py-1 rounded bg-blue-500 text-white" onclick="selectRace(2)">
-                                        Selected
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="py-2 px-4 border-b">3</td>
-                                <td class="py-2 px-4 border-b">Japanese Grand Prix</td>
-                                <td class="py-2 px-4 border-b">Suzuka</td>
-                                <td class="py-2 px-4 border-b">Apr 6, 2025</td>
-                                <td class="py-2 px-4 border-b">
-                                    <button class="px-4 py-1 rounded bg-gray-200" onclick="selectRace(3)">
-                                        Select
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Driver Selection for Selected Race -->
-            <div class="mb-6 p-4 bg-white rounded shadow">
-                <h2 class="text-xl font-semibold mb-3" id="racePicksTitle">Pick Drivers for Round 2: Chinese Grand Prix (Shanghai International Circuit)</h2>
-                
-                <!-- First place -->
-                <div class="mb-4">
-                    <label class="block mb-2 font-medium">1st Place</label>
-                    <select class="w-full p-2 border rounded" id="firstPlace">
-                        <option value="">Select a driver</option>
-                        <optgroup label="Red Bull">
-                            <option value="1">Max Verstappen</option>
-                            <option value="2">Liam Lawson</option>
-                        </optgroup>
-                        <optgroup label="Ferrari">
-                            <option value="3">Charles Leclerc</option>
-                            <option value="4">Lewis Hamilton</option>
-                        </optgroup>
-                        <optgroup label="Mercedes">
-                            <option value="5">Kimi Antonelli</option>
-                            <option value="6">George Russell</option>
-                        </optgroup>
-                        <optgroup label="McLaren">
-                            <option value="7">Lando Norris</option>
-                            <option value="8">Oscar Piastri</option>
-                        </optgroup>
-                        <!-- More drivers would be here -->
-                    </select>
-                </div>
-                
-                <!-- Second place -->
-                <div class="mb-4">
-                    <label class="block mb-2 font-medium">2nd Place</label>
-                    <select class="w-full p-2 border rounded" id="secondPlace">
-                        <option value="">Select a driver</option>
-                        <optgroup label="Red Bull">
-                            <option value="1">Max Verstappen</option>
-                            <option value="2">Liam Lawson</option>
-                        </optgroup>
-                        <optgroup label="Ferrari">
-                            <option value="3">Charles Leclerc</option>
-                            <option value="4">Lewis Hamilton</option>
-                        </optgroup>
-                        <optgroup label="Mercedes">
-                            <option value="5">Kimi Antonelli</option>
-                            <option value="6">George Russell</option>
-                        </optgroup>
-                        <optgroup label="McLaren">
-                            <option value="7">Lando Norris</option>
-                            <option value="8">Oscar Piastri</option>
-                        </optgroup>
-                        <!-- More drivers would be here -->
-                    </select>
-                </div>
-                
-                <!-- Third place -->
-                <div class="mb-4">
-                    <label class="block mb-2 font-medium">3rd Place</label>
-                    <select class="w-full p-2 border rounded" id="thirdPlace">
-                        <option value="">Select a driver</option>
-                        <optgroup label="Red Bull">
-                            <option value="1">Max Verstappen</option>
-                            <option value="2">Liam Lawson</option>
-                        </optgroup>
-                        <optgroup label="Ferrari">
-                            <option value="3">Charles Leclerc</option>
-                            <option value="4">Lewis Hamilton</option>
-                        </optgroup>
-                        <optgroup label="Mercedes">
-                            <option value="5">Kimi Antonelli</option>
-                            <option value="6">George Russell</option>
-                        </optgroup>
-                        <optgroup label="McLaren">
-                            <option value="7">Lando Norris</option>
-                            <option value="8">Oscar Piastri</option>
-                        </optgroup>
-                        <!-- More drivers would be here -->
-                    </select>
-                </div>
-                
-                <button 
-                    class="px-4 py-2 bg-blue-500 text-white rounded w-full"
-                    onclick="savePicks()"
-                >
-                    Save Picks
-                </button>
-            </div>
-            
-            <!-- Historical Picks (completed races) -->
-            <div class="mb-6 p-4 bg-white rounded shadow">
-                <h2 class="text-xl font-semibold mb-3">My Historical Picks</h2>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white">
-                        <thead>
-                            <tr>
-                                <th class="py-2 px-4 border-b text-left">Race</th>
-                                <th class="py-2 px-4 border-b text-left">1st Place</th>
-                                <th class="py-2 px-4 border-b text-left">2nd Place</th>
-                                <th class="py-2 px-4 border-b text-left">3rd Place</th>
-                                <th class="py-2 px-4 border-b text-left">Score</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historicalPicks">
-                            <!-- Picks will be populated based on login -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <!-- Completed Race Results -->
-            <div class="mb-6 p-4 bg-white rounded shadow">
-                <h2 class="text-xl font-semibold mb-3">Completed Race Results</h2>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white">
-                        <thead>
-                            <tr>
-                                <th class="py-2 px-4 border-b text-left">Race</th>
-                                <th class="py-2 px-4 border-b text-center">1st</th>
-                                <th class="py-2 px-4 border-b text-center">2nd</th>
-                                <th class="py-2 px-4 border-b text-center">3rd</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="py-2 px-4 border-b">Round 1: Australian Grand Prix</td>
-                                <td class="py-2 px-4 border-b text-center">
-                                    <div class="flex items-center justify-center">
-                                        <span class="inline-block w-3 h-3 rounded-full mr-2" style="background-color: #FF8700;"></span>
-                                        Lando Norris
-                                    </div>
-                                </td>
-                                <td class="py-2 px-4 border-b text-center">
-                                    <div class="flex items-center justify-center">
-                                        <span class="inline-block w-3 h-3 rounded-full mr-2" style="background-color: #0600EF;"></span>
-                                        Max Verstappen
-                                    </div>
-                                </td>
-                                <td class="py-2 px-4 border-b text-center">
-                                    <div class="flex items-center justify-center">
-                                        <span class="inline-block w-3 h-3 rounded-full mr-2" style="background-color: #00D2BE;"></span>
-                                        George Russell
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+  <!-- Main Content -->
+  <div class="container mx-auto py-6">
+    <!-- Login Form -->
+    <div id="loginForm" class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8 mb-8">
+      <h2 class="text-2xl font-bold mb-6 text-center">Login Required</h2>
+      <p class="mb-4 text-gray-600">Please log in to access the F1 2025 Tipping Competition.</p>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Username</label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username">
+      </div>
+      <div class="mb-6">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password</label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password">
+      </div>
+      <div class="flex items-center justify-between">
+        <button id="loginButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+          Sign In
+        </button>
+      </div>
+      <div class="mt-6 text-sm text-gray-500">
+        <p>Demo accounts:</p>
+        <p>Scotty: username "scotty", password "pass1"</p>
+        <p>Lina: username "lina", password "pass2"</p>
+        <p>Steve: username "steve", password "pass3"</p>
+      </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white p-4 mt-8">
-        <div class="container mx-auto text-center">
-            <p>© 2025 F1 Tipping Competition | <a href="admin.html" class="underline">Admin Login</a></p>
+    <!-- Main App (hidden until login) -->
+    <div id="mainApp" class="hidden">
+      <!-- User bar -->
+      <div class="flex justify-between items-center mb-6 bg-white p-4 rounded shadow">
+        <h2 class="text-xl font-semibold">Welcome, <span id="userName">User</span>!</h2>
+        <button class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded" id="logoutButton">Logout</button>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="p-4 bg-white rounded shadow mb-6">
+        <h2 class="text-xl font-semibold mb-3">Leaderboard</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white" id="leaderboardTable">
+            <thead>
+              <tr>
+                <th class="py-2 px-4 border-b text-left">Position</th>
+                <th class="py-2 px-4 border-b text-left">Player</th>
+                <th class="py-2 px-4 border-b text-left">Total Score</th>
+                <th class="py-2 px-4 border-b text-center">R1</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+              <!-- Leaderboard rows will be dynamically generated -->
+            </tbody>
+          </table>
         </div>
-    </footer>
+      </div>
 
-    <script>
-        // User data
-        const users = [
-            { 
-                id: 1, 
-                username: 'scotty', 
-                password: 'pass1', 
-                name: 'Scotty', 
-                picks: {
-                    '1': { first: 7, second: 1, third: 8 }
-                }, 
-                scores: {
-                    '1': 6
-                } 
-            },
-            { 
-                id: 2, 
-                username: 'lina', 
-                password: 'pass2', 
-                name: 'Lina', 
-                picks: {
-                    '1': { first: 3, second: 8, third: 1 }
-                }, 
-                scores: {
-                    '1': 15
-                } 
-            },
-            { 
-                id: 3, 
-                username: 'steve', 
-                password: 'pass3', 
-                name: 'Steve', 
-                picks: {
-                    '1': { first: 3, second: 8, third: 4 }
-                }, 
-                scores: {
-                    '1': 21
-                } 
-            },
-        ];
-        
-        // Driver data
-        const drivers = [
-            { id: 1, name: 'Max Verstappen', team: 'Red Bull', color: '#0600EF', textColor: 'white' },
-            { id: 2, name: 'Liam Lawson', team: 'Red Bull', color: '#0600EF', textColor: 'white' },
-            { id: 3, name: 'Charles Leclerc', team: 'Ferrari', color: '#F91536', textColor: 'white' },
-            { id: 4, name: 'Lewis Hamilton', team: 'Ferrari', color: '#F91536', textColor: 'white' },
-            { id: 5, name: 'Kimi Antonelli', team: 'Mercedes', color: '#00D2BE', textColor: 'black' },
-            { id: 6, name: 'George Russell', team: 'Mercedes', color: '#00D2BE', textColor: 'black' },
-            { id: 7, name: 'Lando Norris', team: 'McLaren', color: '#FF8700', textColor: 'black' },
-            { id: 8, name: 'Oscar Piastri', team: 'McLaren', color: '#FF8700', textColor: 'black' }
-            // More drivers would be included here
-        ];
+      <!-- Race Selection -->
+      <div class="mb-6 p-4 bg-white rounded shadow">
+        <h2 class="text-xl font-semibold mb-3">Select Race</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white" id="racesTable">
+            <thead>
+              <tr>
+                <th class="py-2 px-4 border-b text-left">Round</th>
+                <th class="py-2 px-4 border-b text-left">Race</th>
+                <th class="py-2 px-4 border-b text-left">Circuit</th>
+                <th class="py-2 px-4 border-b text-left">Date</th>
+                <th class="py-2 px-4 border-b text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody id="racesBody">
+              <!-- Race rows will be generated here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-        let currentUser = null;
-        let currentRace = 2;
-        
-        // Login function
-        function login() {
-            const username = document.getElementById('username').value.toLowerCase().trim();
-            const password = document.getElementById('password').value;
-            
-            const user = users.find(u => u.username.toLowerCase() === username && u.password === password);
-            
-            if (user) {
-                currentUser = user;
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('mainApp').classList.remove('hidden');
-                document.getElementById('userName').textContent = user.name;
-                
-                // Highlight the current user in the leaderboard
-                document.querySelectorAll('#player1Row, #player2Row, #player3Row').forEach(row => {
-                    row.classList.remove('bg-blue-50');
-                });
-                
-                if (user.id === 1) document.getElementById('player1Row').classList.add('bg-blue-50');
-                if (user.id === 2) document.getElementById('player2Row').classList.add('bg-blue-50');
-                if (user.id === 3) document.getElementById('player3Row').classList.add('bg-blue-50');
-                
-                // Load historical picks
-                loadHistoricalPicks();
-                
-                console.log("Logged in as:", user.name);
-            } else {
-                alert('Invalid username or password');
-            }
-        }
-        
-        // Logout function
-        function logout() {
-            currentUser = null;
-            document.getElementById('loginForm').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('hidden');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-        }
-        
-        // Select race
-        function selectRace(raceId) {
-            currentRace = raceId;
-            document.getElementById('racePicksTitle').textContent = `Pick Drivers for Round ${raceId}: ${raceId === 2 ? 'Chinese Grand Prix (Shanghai International Circuit)' : 'Japanese Grand Prix (Suzuka)'}`;
-            
-            // Update race selection UI
-            // In a full implementation, this would update the table to highlight the selected race
-        }
-        
-        // Save picks
-        function savePicks() {
-            const first = document.getElementById('firstPlace').value;
-            const second = document.getElementById('secondPlace').value;
-            const third = document.getElementById('thirdPlace').value;
-            
-            if (!first || !second || !third) {
-                alert('Please select all three positions');
-                return;
-            }
-            
-            if (first === second || first === third || second === third) {
-                alert('Please select different drivers for each position');
-                return;
-            }
-            
-            // In a real implementation, this would save to a database or localStorage
-            if (!currentUser.picks) {
-                currentUser.picks = {};
-            }
-            
-            currentUser.picks[currentRace] = {
-                first: parseInt(first),
-                second: parseInt(second),
-                third: parseInt(third)
-            };
-            
-            alert('Picks saved successfully!');
-            console.log(`Saved picks for ${currentUser.name}, Race ${currentRace}:`, currentUser.picks[currentRace]);
-        }
-        
-        // Load historical picks
-        function loadHistoricalPicks() {
-            const historicalTable = document.getElementById('historicalPicks');
-            historicalTable.innerHTML = '';
-            
-            if (currentUser && currentUser.picks && currentUser.picks['1']) {
-                const tr = document.createElement('tr');
-                tr.className = 'bg-gray-50';
-                
-                // Race
-                const tdRace = document.createElement('td');
-                tdRace.className = 'py-2 px-4 border-b';
-                tdRace.textContent = 'Round 1: Australian Grand Prix';
-                tr.appendChild(tdRace);
-                
-                // First place
-                const tdFirst = document.createElement('td');
-                tdFirst.className = 'py-2 px-4 border-b';
-                const firstDriver = drivers.find(d => d.id === currentUser.picks['1'].first);
-                if (firstDriver) {
-                    tdFirst.innerHTML = `${firstDriver.name} <span class="team-badge" style="background-color: ${firstDriver.color}; color: ${firstDriver.textColor}">${firstDriver.team}</span>`;
-                }
-                tr.appendChild(tdFirst);
-                
-                // Second place
-                const tdSecond = document.createElement('td');
-                tdSecond.className = 'py-2 px-4 border-b';
-                const secondDriver = drivers.find(d => d.id === currentUser.picks['1'].second);
-                if (secondDriver) {
-                    tdSecond.innerHTML = `${secondDriver.name} <span class="team-badge" style="background-color: ${secondDriver.color}; color: ${secondDriver.textColor}">${secondDriver.team}</span>`;
-                }
-                tr.appendChild(tdSecond);
-                
-                // Third place
-                const tdThird = document.createElement('td');
-                tdThird.className = 'py-2 px-4 border-b';
-                const thirdDriver = drivers.find(d => d.id === currentUser.picks['1'].third);
-                if (thirdDriver) {
-                    tdThird.innerHTML = `${thirdDriver.name} <span class="team-badge" style="background-color: ${thirdDriver.color}; color: ${thirdDriver.textColor}">${thirdDriver.team}</span>`;
-                }
-                tr.appendChild(tdThird);
-                
-                // Score
-                const tdScore = document.createElement('td');
-                tdScore.className = 'py-2 px-4 border-b font-bold';
-                tdScore.textContent = currentUser.scores['1'] || '-';
-                tr.appendChild(tdScore);
-                
-                historicalTable.appendChild(tr);
-            } else {
-                const tr = document.createElement('tr');
-                const td = document.createElement('td');
-                td.className = 'py-4 text-center text-gray-500';
-                td.colSpan = 5;
-                td.textContent = 'No historical picks available yet.';
-                tr.appendChild(td);
-                historicalTable.appendChild(tr);
-            }
-        }
-        
-        // Handle Enter key in login form
-        document.getElementById('password').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                login();
-            }
+      <!-- Driver Selection for Selected Race -->
+      <div class="mb-6 p-4 bg-white rounded shadow">
+        <h2 class="text-xl font-semibold mb-3" id="racePicksTitle">Pick Drivers for Race</h2>
+        <!-- First place -->
+        <div class="mb-4">
+          <label class="block mb-2 font-medium">1st Place</label>
+          <select class="w-full p-2 border rounded" id="firstPlace">
+            <option value="">Select a driver</option>
+            <!-- Options generated dynamically -->
+          </select>
+        </div>
+        <!-- Second place -->
+        <div class="mb-4">
+          <label class="block mb-2 font-medium">2nd Place</label>
+          <select class="w-full p-2 border rounded" id="secondPlace">
+            <option value="">Select a driver</option>
+          </select>
+        </div>
+        <!-- Third place -->
+        <div class="mb-4">
+          <label class="block mb-2 font-medium">3rd Place</label>
+          <select class="w-full p-2 border rounded" id="thirdPlace">
+            <option value="">Select a driver</option>
+          </select>
+        </div>
+        <button class="px-4 py-2 bg-blue-500 text-white rounded w-full" id="savePicksButton">Save Picks</button>
+      </div>
+
+      <!-- Historical Picks (completed races) -->
+      <div class="mb-6 p-4 bg-white rounded shadow">
+        <h2 class="text-xl font-semibold mb-3">My Historical Picks</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white">
+            <thead>
+              <tr>
+                <th class="py-2 px-4 border-b text-left">Race</th>
+                <th class="py-2 px-4 border-b text-left">1st Place</th>
+                <th class="py-2 px-4 border-b text-left">2nd Place</th>
+                <th class="py-2 px-4 border-b text-left">3rd Place</th>
+                <th class="py-2 px-4 border-b text-left">Score</th>
+              </tr>
+            </thead>
+            <tbody id="historicalPicks">
+              <!-- Historical picks will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Completed Race Results -->
+      <div class="mb-6 p-4 bg-white rounded shadow">
+        <h2 class="text-xl font-semibold mb-3">Completed Race Results</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-white" id="completedRacesTable">
+            <thead>
+              <tr>
+                <th class="py-2 px-4 border-b text-left">Race</th>
+                <th class="py-2 px-4 border-b text-center">1st</th>
+                <th class="py-2 px-4 border-b text-center">2nd</th>
+                <th class="py-2 px-4 border-b text-center">3rd</th>
+              </tr>
+            </thead>
+            <tbody id="completedRacesBody">
+              <!-- Completed race results will be generated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white p-4 mt-8">
+    <div class="container mx-auto text-center">
+      <p>© 2025 F1 Tipping Competition | <a href="admin.html" class="underline">Admin Login</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Global variables for data
+    let players = [];
+    let drivers = [];
+    let races = [];
+    let currentUser = null;
+    let currentRace = null;
+
+    // Load data from JSON files (assumes these files are served from your server)
+    async function loadData() {
+      try {
+        const playersRes = await fetch('players.json');
+        let playersData = await playersRes.json();
+        players = playersData.players;
+
+        const driversRes = await fetch('drivers.json');
+        let driversData = await driversRes.json();
+        drivers = driversData.drivers;
+
+        const racesRes = await fetch('races.json');
+        let racesData = await racesRes.json();
+        races = racesData.races;
+
+        console.log("Loaded data:", players, drivers, races);
+        renderRaceTable();
+        renderDriverOptions();
+        updateLeaderboard();
+        renderCompletedRaces();
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
+    }
+
+    // Render the races table for selection
+    function renderRaceTable() {
+      const racesBody = document.getElementById('racesBody');
+      racesBody.innerHTML = '';
+      races.forEach(race => {
+        const tr = document.createElement('tr');
+        tr.className = race.completed ? 'bg-gray-100' : 'bg-blue-100';
+        tr.innerHTML = `
+          <td class="py-2 px-4 border-b">${race.id}</td>
+          <td class="py-2 px-4 border-b">${race.name}</td>
+          <td class="py-2 px-4 border-b">${race.circuit}</td>
+          <td class="py-2 px-4 border-b">${new Date(race.date).toLocaleDateString()}</td>
+          <td class="py-2 px-4 border-b">
+            <button class="px-4 py-1 rounded ${race.completed ? 'bg-gray-400 text-white opacity-50 cursor-not-allowed' : 'bg-blue-500 text-white'}" ${race.completed ? 'disabled' : ''} onclick="selectRace(${race.id})">
+              ${race.completed ? 'Completed' : 'Select'}
+            </button>
+          </td>
+        `;
+        racesBody.appendChild(tr);
+      });
+    }
+
+    // Render driver options for each dropdown
+    function renderDriverOptions() {
+      ['firstPlace', 'secondPlace', 'thirdPlace'].forEach(selectId => {
+        const selectEl = document.getElementById(selectId);
+        selectEl.innerHTML = '<option value="">Select a driver</option>';
+        // Group drivers by team for clarity (optional)
+        const teams = {};
+        drivers.forEach(driver => {
+          if (!teams[driver.team]) teams[driver.team] = [];
+          teams[driver.team].push(driver);
         });
-    </script>
+        for (const team in teams) {
+          const optGroup = document.createElement('optgroup');
+          optGroup.label = team;
+          teams[team].forEach(driver => {
+            const option = document.createElement('option');
+            option.value = driver.id;
+            option.textContent = `${driver.name} (#${driver.number})`;
+            optGroup.appendChild(option);
+          });
+          selectEl.appendChild(optGroup);
+        }
+      });
+    }
+
+    // Update the leaderboard based on players' scores (example for Round 1)
+    function updateLeaderboard() {
+      const leaderboardBody = document.getElementById('leaderboardBody');
+      leaderboardBody.innerHTML = '';
+      // Sort players by their Round 1 score (or total score, if available)
+      const sortedPlayers = [...players].sort((a, b) => (a.scores['1'] || 0) - (b.scores['1'] || 0));
+      sortedPlayers.forEach((player, index) => {
+        const tr = document.createElement('tr');
+        if (currentUser && player.id === currentUser.id) {
+          tr.classList.add('bg-blue-50');
+        }
+        tr.innerHTML = `
+          <td class="py-2 px-4 border-b">${index + 1}</td>
+          <td class="py-2 px-4 border-b">${player.name}</td>
+          <td class="py-2 px-4 border-b font-bold">${player.scores['1'] || '-'}</td>
+          <td class="py-2 px-4 border-b text-center">${player.scores['1'] || '-'}</td>
+        `;
+        leaderboardBody.appendChild(tr);
+      });
+    }
+
+    // Render completed races results (showing top three finishers)
+    function renderCompletedRaces() {
+      const completedBody = document.getElementById('completedRacesBody');
+      completedBody.innerHTML = '';
+      races.filter(race => race.completed).forEach(race => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="py-2 px-4 border-b">Round ${race.id}: ${race.name}</td>
+          <td class="py-2 px-4 border-b text-center">
+            ${renderDriverBadge(race.results[0])}
+          </td>
+          <td class="py-2 px-4 border-b text-center">
+            ${renderDriverBadge(race.results[1])}
+          </td>
+          <td class="py-2 px-4 border-b text-center">
+            ${renderDriverBadge(race.results[2])}
+          </td>
+        `;
+        completedBody.appendChild(tr);
+      });
+    }
+
+    // Helper: Render a driver badge (name and colored dot)
+    function renderDriverBadge(driverId) {
+      const driver = drivers.find(d => d.id === driverId);
+      if (!driver) return '';
+      return `<div class="flex items-center justify-center">
+                <span class="inline-block w-3 h-3 rounded-full mr-2" style="background-color: ${driver.color};"></span>
+                ${driver.name}
+              </div>`;
+    }
+
+    // Login function: uses players data
+    function login() {
+      const username = document.getElementById('username').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+      const user = players.find(u => u.username.toLowerCase() === username && u.password === password);
+      if (user) {
+        currentUser = user;
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('mainApp').classList.remove('hidden');
+        document.getElementById('userName').textContent = user.name;
+        updateLeaderboard();
+        loadHistoricalPicks();
+      } else {
+        alert('Invalid username or password');
+      }
+    }
+
+    // Logout function
+    function logout() {
+      currentUser = null;
+      document.getElementById('loginForm').classList.remove('hidden');
+      document.getElementById('mainApp').classList.add('hidden');
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+    }
+
+    // Select a race (update the title for driver picks)
+    function selectRace(raceId) {
+      currentRace = raceId;
+      const race = races.find(r => r.id === raceId);
+      if (race) {
+        document.getElementById('racePicksTitle').textContent = `Pick Drivers for Round ${raceId}: ${race.name} (${race.circuit})`;
+      }
+    }
+
+    // Save driver picks for the current user and race
+    function savePicks() {
+      const first = document.getElementById('firstPlace').value;
+      const second = document.getElementById('secondPlace').value;
+      const third = document.getElementById('thirdPlace').value;
+      if (!first || !second || !third) {
+        alert('Please select all three positions');
+        return;
+      }
+      if (first === second || first === third || second === third) {
+        alert('Please select different drivers for each position');
+        return;
+      }
+      if (!currentUser || !currentRace) {
+        alert('User or race not selected');
+        return;
+      }
+      // Update the current user's picks
+      if (!currentUser.picks) currentUser.picks = {};
+      currentUser.picks[currentRace] = {
+        first: parseInt(first),
+        second: parseInt(second),
+        third: parseInt(third)
+      };
+      alert('Picks saved successfully!');
+      // Optionally, update the server with new players data
+      updatePlayersData();
+      loadHistoricalPicks();
+    }
+
+    // Load historical picks for the current user (if any)
+    function loadHistoricalPicks() {
+      const historicalTable = document.getElementById('historicalPicks');
+      historicalTable.innerHTML = '';
+      if (currentUser && currentUser.picks && currentUser.picks['1']) {
+        // For demonstration, we load Round 1 picks
+        const tr = document.createElement('tr');
+        tr.className = 'bg-gray-50';
+        // Race cell
+        const tdRace = document.createElement('td');
+        tdRace.className = 'py-2 px-4 border-b';
+        tdRace.textContent = 'Round 1: Australian Grand Prix';
+        tr.appendChild(tdRace);
+        // First place
+        const tdFirst = document.createElement('td');
+        tdFirst.className = 'py-2 px-4 border-b';
+        const firstDriver = drivers.find(d => d.id === currentUser.picks['1'].first);
+        tdFirst.innerHTML = firstDriver ? `${firstDriver.name} <span class="team-badge" style="background-color: ${firstDriver.color}; color: ${firstDriver.textColor}">${firstDriver.team}</span>` : '';
+        tr.appendChild(tdFirst);
+        // Second place
+        const tdSecond = document.createElement('td');
+        tdSecond.className = 'py-2 px-4 border-b';
+        const secondDriver = drivers.find(d => d.id === currentUser.picks['1'].second);
+        tdSecond.innerHTML = secondDriver ? `${secondDriver.name} <span class="team-badge" style="background-color: ${secondDriver.color}; color: ${secondDriver.textColor}">${secondDriver.team}</span>` : '';
+        tr.appendChild(tdSecond);
+        // Third place
+        const tdThird = document.createElement('td');
+        tdThird.className = 'py-2 px-4 border-b';
+        const thirdDriver = drivers.find(d => d.id === currentUser.picks['1'].third);
+        tdThird.innerHTML = thirdDriver ? `${thirdDriver.name} <span class="team-badge" style="background-color: ${thirdDriver.color}; color: ${thirdDriver.textColor}">${thirdDriver.team}</span>` : '';
+        tr.appendChild(tdThird);
+        // Score
+        const tdScore = document.createElement('td');
+        tdScore.className = 'py-2 px-4 border-b font-bold';
+        tdScore.textContent = currentUser.scores['1'] || '-';
+        tr.appendChild(tdScore);
+        historicalTable.appendChild(tr);
+      } else {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.className = 'py-4 text-center text-gray-500';
+        td.colSpan = 5;
+        td.textContent = 'No historical picks available yet.';
+        tr.appendChild(td);
+        historicalTable.appendChild(tr);
+      }
+    }
+
+    // Update players data on the server (requires a backend API endpoint)
+    async function updatePlayersData() {
+      try {
+        const response = await fetch('/api/updatePlayers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ players: players })
+        });
+        if (!response.ok) {
+          throw new Error('Failed to update players data on the server.');
+        }
+        console.log('Players data updated on server.');
+      } catch (error) {
+        console.error('Error updating players data:', error);
+      }
+    }
+
+    // Event listeners
+    document.getElementById('loginButton').addEventListener('click', login);
+    document.getElementById('logoutButton').addEventListener('click', logout);
+    document.getElementById('savePicksButton').addEventListener('click', savePicks);
+    document.getElementById('password').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') login();
+    });
+
+    // On page load, fetch JSON data
+    document.addEventListener('DOMContentLoaded', loadData);
+  </script>
 </body>
 </html>
