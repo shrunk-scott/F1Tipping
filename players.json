@@ -1,0 +1,46 @@
+{
+  "players": [
+    { 
+      "id": 1, 
+      "username": "scotty", 
+      "password": "pass1", 
+      "name": "Scotty", 
+      "picks": {
+        "1": { "first": 7, "second": 1, "third": 8 },
+        "2": { "first": 1, "second": 7, "third": 3 }
+      }, 
+      "scores": {
+        "1": 6,
+        "2": 12
+      } 
+    },
+    { 
+      "id": 2, 
+      "username": "lina", 
+      "password": "pass2", 
+      "name": "Lina", 
+      "picks": {
+        "1": { "first": 3, "second": 8, "third": 1 },
+        "2": { "first": 7, "second": 8, "third": 1 }
+      }, 
+      "scores": {
+        "1": 15,
+        "2": 9
+      } 
+    },
+    { 
+      "id": 3, 
+      "username": "steve", 
+      "password": "pass3", 
+      "name": "Steve", 
+      "picks": {
+        "1": { "first": 3, "second": 8, "third": 4 },
+        "2": { "first": 8, "second": 7, "third": 6 }
+      }, 
+      "scores": {
+        "1": 21,
+        "2": 0
+      } 
+    }
+  ]
+}
