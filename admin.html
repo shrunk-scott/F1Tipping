@@ -117,7 +117,7 @@
         setRaceResults(newResults);
       };
 
-      // Save race results (and update players scores accordingly)
+      // Save race results and calculate scores based on finishing positions
       const enterRaceResults = async () => {
         if (!resultRace) {
           alert("Please select a race first");
@@ -132,15 +132,15 @@
         setRaces(updatedRaces);
         // Send updated races to server (endpoint assumed as /api/updateRaces)
         await updateData('/api/updateRaces', { races: updatedRaces });
-        // For each player, calculate scores for this race
+        // For each player, calculate score as the sum of the actual finishing positions of their picked drivers.
         const updatedPlayers = players.map(player => {
           const picks = player.picks[resultRace];
           if (!picks) return player;
-          const firstPoints = Math.abs(1 - (raceResults.findIndex(id => id === picks.first) + 1));
-          const secondPoints = Math.abs(2 - (raceResults.findIndex(id => id === picks.second) + 1));
-          const thirdPoints = Math.abs(3 - (raceResults.findIndex(id => id === picks.third) + 1));
-          const totalPoints = firstPoints + secondPoints + thirdPoints;
-          return { ...player, scores: { ...player.scores, [resultRace]: totalPoints } };
+          const firstScore = (raceResults.findIndex(id => id === picks.first) + 1);
+          const secondScore = (raceResults.findIndex(id => id === picks.second) + 1);
+          const thirdScore = (raceResults.findIndex(id => id === picks.third) + 1);
+          const totalScore = firstScore + secondScore + thirdScore;
+          return { ...player, scores: { ...player.scores, [resultRace]: totalScore } };
         });
         setPlayers(updatedPlayers);
         // Update players data on the server (endpoint assumed as /api/updatePlayers)
@@ -328,7 +328,7 @@
                           <td className="py-2 px-4 border-b">
                             <div className="flex gap-2">
                               <button className="px-3 py-1 bg-yellow-500 text-white rounded text-sm" onClick={async () => {
-                                // For demonstration, we simulate locking by setting race date to today.
+                                // For demonstration, simulate locking by setting race date to today.
                                 const updatedRaces = races.map(r => r.id === race.id ? { ...r, date: new Date().toISOString().split('T')[0] } : r);
                                 setRaces(updatedRaces);
                                 await updateData('/api/updateRaces', { races: updatedRaces });
