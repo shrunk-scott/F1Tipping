@@ -4,914 +4,335 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>F1 2025 Tipping Competition</title>
-    <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React and ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Babel for JSX support -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Recharts library for any future visualizations -->
-    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
     <style>
-        /* Additional custom styles */
         body {
             background-color: #f1f5f9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
         }
         .f1-header {
             background-image: linear-gradient(to right, #e10600, #ff0100);
             color: white;
         }
+        .team-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
-    <!-- Header section -->
+    <!-- Header -->
     <header class="f1-header p-4 shadow-md">
         <div class="container mx-auto">
             <h1 class="text-3xl font-bold">F1 2025 Tipping Competition</h1>
         </div>
     </header>
 
-    <!-- Main app container -->
-    <div id="root" class="container mx-auto py-6"></div>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white p-4 mt-8">
-        <div class="container mx-auto text-center">
-            <p>© 2025 F1 2025 Tipping Competition | <a href="admin.html" class="underline">Admin Login</a></p>
+    <!-- Main Content -->
+    <div class="container mx-auto py-6">
+        <!-- Login Form -->
+        <div id="loginForm" class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8 mb-8">
+            <h2 class="text-2xl font-bold mb-6 text-center">Login Required</h2>
+            <p class="mb-4 text-gray-600">Please log in to access the F1 2025 Tipping Competition.</p>
+            
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+                    Username
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="username"
+                    type="text"
+                    placeholder="Username"
+                />
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+                    Password
+                </label>
+                <input
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    id="password"
+                    type="password"
+                    placeholder="Password"
+                />
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="button"
+                    onclick="login()"
+                >
+                    Sign In
+                </button>
+            </div>
+            
+            <div class="mt-6 text-sm text-gray-500">
+                <p>Demo accounts:</p>
+                <p>Scotty: username "scotty", password "pass1"</p>
+                <p>Lina: username "lina", password "pass2"</p>
+                <p>Steve: username "steve", password "pass3"</p>
+            </div>
         </div>
-    </footer>
 
-    <!-- Main app script -->
-    <script type="text/babel">
-        const F1TippingApp = () => {
-          // Team colors for styling
-          const teamColors = {
-            'Red Bull': { bg: '#0600EF', text: 'white' },
-            'Ferrari': { bg: '#F91536', text: 'white' },
-            'Mercedes': { bg: '#00D2BE', text: 'black' },
-            'McLaren': { bg: '#FF8700', text: 'black' },
-            'Aston Martin': { bg: '#006F62', text: 'white' },
-            'Alpine': { bg: '#0090FF', text: 'white' },
-            'Williams': { bg: '#005AFF', text: 'white' },
-            'Racing Bulls': { bg: '#1E41FF', text: 'white' },
-            'Haas': { bg: '#B6BABD', text: 'black' },
-            'Sauber': { bg: '#52E252', text: 'black' }
-          };
-
-          // State for user login
-          const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-          const [loginUsername, setLoginUsername] = React.useState('');
-          const [loginPassword, setLoginPassword] = React.useState('');
-          const [registerUsername, setRegisterUsername] = React.useState('');
-          const [registerPassword, setRegisterPassword] = React.useState('');
-          const [registerName, setRegisterName] = React.useState('');
-          const [showRegister, setShowRegister] = React.useState(false);
-
-          // State for drivers, races, users and their picks
-          const [drivers, setDrivers] = React.useState([
-            { id: 1, name: 'Max Verstappen', team: 'Red Bull' },
-            { id: 2, name: 'Liam Lawson', team: 'Red Bull' },
-            { id: 3, name: 'Charles Leclerc', team: 'Ferrari' },
-            { id: 4, name: 'Lewis Hamilton', team: 'Ferrari' },
-            { id: 5, name: 'Kimi Antonelli', team: 'Mercedes' },
-            { id: 6, name: 'George Russell', team: 'Mercedes' },
-            { id: 7, name: 'Lando Norris', team: 'McLaren' },
-            { id: 8, name: 'Oscar Piastri', team: 'McLaren' },
-            { id: 9, name: 'Lance Stroll', team: 'Aston Martin' },
-            { id: 10, name: 'Fernando Alonso', team: 'Aston Martin' },
-            { id: 11, name: 'Pierre Gasly', team: 'Alpine' },
-            { id: 12, name: 'Jack Doohan', team: 'Alpine' },
-            { id: 13, name: 'Alex Albon', team: 'Williams' },
-            { id: 14, name: 'Carlos Sainz', team: 'Williams' },
-            { id: 15, name: 'Yuki Tsunoda', team: 'Racing Bulls' },
-            { id: 16, name: 'Isack Hadjar', team: 'Racing Bulls' },
-            { id: 17, name: 'Oliver Bearman', team: 'Haas' },
-            { id: 18, name: 'Esteban Ocon', team: 'Haas' },
-            { id: 19, name: 'Nico Hülkenberg', team: 'Sauber' },
-            { id: 20, name: 'Gabriel Bortoleto', team: 'Sauber' },
-          ]);
-
-          const [races, setRaces] = React.useState([
-            { id: 1, name: 'Australian Grand Prix', circuit: 'Albert Park', date: '2025-03-16', completed: true, results: [7,1,6,5,13,9,19,3,8,4,11,15,18,17,2,20,10,14,12,16] },
-            { id: 2, name: 'Chinese Grand Prix', circuit: 'Shanghai International Circuit', date: '2025-03-23', completed: false, results: [] },
-            { id: 3, name: 'Japanese Grand Prix', circuit: 'Suzuka', date: '2025-04-06', completed: false, results: [] },
-            { id: 4, name: 'Bahrain Grand Prix', circuit: 'Bahrain International Circuit', date: '2025-04-13', completed: false, results: [] },
-            { id: 5, name: 'Saudi Arabian Grand Prix', circuit: 'Jeddah Corniche Circuit', date: '2025-04-20', completed: false, results: [] },
-            { id: 6, name: 'Miami Grand Prix', circuit: 'Miami International Autodrome', date: '2025-05-04', completed: false, results: [] },
-            { id: 7, name: 'Emilia Romagna Grand Prix', circuit: 'Imola', date: '2025-05-18', completed: false, results: [] },
-            { id: 8, name: 'Monaco Grand Prix', circuit: 'Monaco', date: '2025-05-25', completed: false, results: [] },
-            { id: 9, name: 'Spanish Grand Prix', circuit: 'Circuit de Catalunya', date: '2025-06-01', completed: false, results: [] },
-            { id: 10, name: 'Canadian Grand Prix', circuit: 'Circuit Gilles Villeneuve', date: '2025-06-15', completed: false, results: [] },
-            { id: 11, name: 'Austrian Grand Prix', circuit: 'Red Bull Ring', date: '2025-06-29', completed: false, results: [] },
-            { id: 12, name: 'British Grand Prix', circuit: 'Silverstone', date: '2025-07-06', completed: false, results: [] },
-            { id: 13, name: 'Belgian Grand Prix', circuit: 'Spa-Francorchamps', date: '2025-07-27', completed: false, results: [] },
-            { id: 14, name: 'Hungarian Grand Prix', circuit: 'Hungaroring', date: '2025-08-03', completed: false, results: [] },
-            { id: 15, name: 'Dutch Grand Prix', circuit: 'Zandvoort', date: '2025-08-31', completed: false, results: [] },
-            { id: 16, name: 'Italian Grand Prix', circuit: 'Monza', date: '2025-09-07', completed: false, results: [] },
-            { id: 17, name: 'Azerbaijan Grand Prix', circuit: 'Baku City Circuit', date: '2025-09-21', completed: false, results: [] },
-            { id: 18, name: 'Singapore Grand Prix', circuit: 'Singapore', date: '2025-10-05', completed: false, results: [] },
-            { id: 19, name: 'United States Grand Prix', circuit: 'Circuit of the Americas', date: '2025-10-19', completed: false, results: [] },
-            { id: 20, name: 'Mexican Grand Prix', circuit: 'Autodromo Hermanos Rodriguez', date: '2025-10-26', completed: false, results: [] },
-            { id: 21, name: 'Brazilian Grand Prix', circuit: 'Interlagos', date: '2025-11-09', completed: false, results: [] },
-            { id: 22, name: 'Las Vegas Grand Prix', circuit: 'Las Vegas Strip Circuit', date: '2025-11-22', completed: false, results: [] },
-            { id: 23, name: 'Qatar Grand Prix', circuit: 'Losail International Circuit', date: '2025-11-30', completed: false, results: [] },
-            { id: 24, name: 'Abu Dhabi Grand Prix', circuit: 'Yas Marina', date: '2025-12-07', completed: false, results: [] },
-          ]);
-
-          const [users, setUsers] = React.useState([
-            { 
-              id: 1, 
-              username: 'scotty', 
-              password: 'pass1', 
-              name: 'Scotty', 
-              picks: {
-                1: { first: 7, second: 1, third: 8 }
-              }, 
-              scores: {
-                1: 6
-              } 
-            },
-            { 
-              id: 2, 
-              username: 'lina', 
-              password: 'pass2', 
-              name: 'Lina', 
-              picks: {
-                1: { first: 3, second: 8, third: 1 }
-              }, 
-              scores: {
-                1: 15
-              } 
-            },
-            { 
-              id: 3, 
-              username: 'steve', 
-              password: 'pass3', 
-              name: 'Steve', 
-              picks: {
-                1: { first: 3, second: 8, third: 4 }
-              }, 
-              scores: {
-                1: 21
-              } 
-            },
-          ]);
-
-          const [currentUser, setCurrentUser] = React.useState(null);
-          const [currentRace, setCurrentRace] = React.useState(1);
-          const [picks, setPicks] = React.useState({ first: null, second: null, third: null });
-          const [leaderboard, setLeaderboard] = React.useState([]);
-
-          // Authentication functions
-          const handleLogin = () => {
-            const user = users.find(u => u.username === loginUsername && u.password === loginPassword);
-            if (user) {
-              setCurrentUser(user);
-              setIsLoggedIn(true);
-              setLoginUsername('');
-              setLoginPassword('');
-            } else {
-              alert('Invalid username or password');
-            }
-          };
-
-          const handleRegister = () => {
-            if (!registerUsername || !registerPassword || !registerName) {
-              alert('Please fill in all fields');
-              return;
-            }
-
-            // Check if username already exists
-            if (users.some(u => u.username === registerUsername)) {
-              alert('Username already exists');
-              return;
-            }
-
-            const newUser = {
-              id: users.length + 1,
-              username: registerUsername,
-              password: registerPassword,
-              name: registerName,
-              picks: {},
-              scores: {}
-            };
-
-            setUsers([...users, newUser]);
-            setRegisterUsername('');
-            setRegisterPassword('');
-            setRegisterName('');
-            setShowRegister(false);
-            alert('Registration successful! You can now log in.');
-          };
-
-          const handleLogout = () => {
-            setIsLoggedIn(false);
-            setCurrentUser(null);
-          };
-
-          // Check if race is locked (completed or past deadline)
-          const isRaceLocked = (raceId) => {
-            const race = races.find(r => r.id === raceId);
-            if (!race) return true;
-            
-            // Race is locked if completed
-            if (race.completed) return true;
-            
-            // Race is locked if it's in the past
-            const raceDate = new Date(race.date);
-            const now = new Date();
-            const deadline = new Date(raceDate);
-            deadline.setDate(deadline.getDate() - 1); // Lock 1 day before race
-            
-            return now > deadline;
-          };
-
-          // Calculate points based on actual finishing position
-          const calculatePoints = (predictedPosition, actualPosition) => {
-            if (actualPosition === null) return 0;
-            return Math.abs(predictedPosition - actualPosition);
-          };
-
-          // Update user picks for a race
-          const savePicks = () => {
-            if (!picks.first || !picks.second || !picks.third) {
-              alert('Please select all three positions');
-              return;
-            }
-
-            if (picks.first === picks.second || picks.first === picks.third || picks.second === picks.third) {
-              alert('Please select different drivers for each position');
-              return;
-            }
-            
-            // Check if the race is locked
-            if (isRaceLocked(currentRace)) {
-              alert('Submissions for this race are locked. Either the race is completed or the deadline has passed.');
-              return;
-            }
-
-            const updatedUsers = users.map(user => {
-              if (user.id === currentUser.id) {
-                const updatedPicks = { ...user.picks };
-                updatedPicks[currentRace] = { ...picks };
-                return { ...user, picks: updatedPicks };
-              }
-              return user;
-            });
-
-            setUsers(updatedUsers);
-            // Update current user state
-            setCurrentUser({
-              ...currentUser,
-              picks: {
-                ...currentUser.picks,
-                [currentRace]: { ...picks }
-              }
-            });
-            
-            alert('Picks saved successfully!');
-            setPicks({ first: null, second: null, third: null });
-          };
-          
-          // Load data from localStorage on component mount
-          React.useEffect(() => {
-            const savedData = localStorage.getItem('f1TippingData');
-            if (savedData) {
-              try {
-                const data = JSON.parse(savedData);
-                if (data.users) setUsers(data.users);
-                if (data.races) setRaces(data.races);
-              } catch (e) {
-                console.error("Error parsing saved data:", e);
-              }
-            }
-          }, []);
-          
-          // Calculate and update leaderboard when users or races change
-          React.useEffect(() => {
-            // Force calculate leaderboard from current users
-            const board = users.map(user => {
-              const totalScore = Object.values(user.scores).reduce((sum, score) => sum + score, 0);
-              return { id: user.id, name: user.name, score: totalScore };
-            });
-            
-            // Sort by lowest score first (lowest score wins)
-            board.sort((a, b) => a.score - b.score);
-            setLeaderboard(board);
-            
-            // Also save to localStorage
-            localStorage.setItem('f1TippingData', JSON.stringify({
-              users: users,
-              races: races
-            }));
-          }, [users, races]);
-
-          // Login Form - forcing login to access the app
-          if (!isLoggedIn) {
-            return (
-              <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8 mt-10">
-                {!showRegister ? (
-                  // Login Form
-                  <div>
-                    <h2 className="text-2xl font-bold mb-6 text-center">Login Required</h2>
-                    <p className="mb-4 text-gray-600">Please log in to access the F1 2025 Tipping Competition. You can only view and modify your own picks after logging in.</p>
-                    <div className="mb-4">
-                      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
-                        Username
-                      </label>
-                      <input
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="username"
-                        type="text"
-                        placeholder="Username"
-                        value={loginUsername}
-                        onChange={(e) => setLoginUsername(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-6">
-                      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                        Password
-                      </label>
-                      <input
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="password"
-                        type="password"
-                        placeholder="Password"
-                        value={loginPassword}
-                        onChange={(e) => setLoginPassword(e.target.value)}
-                        onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="button"
-                        onClick={handleLogin}
-                      >
-                        Sign In
-                      </button>
-                      <button
-                        className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-                        onClick={() => setShowRegister(true)}
-                      >
-                        Register
-                      </button>
-                    </div>
-                    <div className="mt-6 text-sm text-gray-500">
-                      <p>Demo accounts:</p>
-                      <p>Scotty: username "scotty", password "pass1"</p>
-                      <p>Lina: username "lina", password "pass2"</p>
-                      <p>Steve: username "steve", password "pass3"</p>
-                    </div>
-                  </div>
-                ) : (
-                  // Register Form
-                  <div>
-                    <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
-                    <div className="mb-4">
-                      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="registerName">
-                        Full Name
-                      </label>
-                      <input
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="registerName"
-                        type="text"
-                        placeholder="Your Name"
-                        value={registerName}
-                        onChange={(e) => setRegisterName(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="registerUsername">
-                        Username
-                      </label>
-                      <input
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="registerUsername"
-                        type="text"
-                        placeholder="Choose a username"
-                        value={registerUsername}
-                        onChange={(e) => setRegisterUsername(e.target.value)}
-                      />
-                    </div>
-                    <div className="mb-6">
-                      <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="registerPassword">
-                        Password
-                      </label>
-                      <input
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="registerPassword"
-                        type="password"
-                        placeholder="Choose a password"
-                        value={registerPassword}
-                        onChange={(e) => setRegisterPassword(e.target.value)}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <button
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="button"
-                        onClick={handleRegister}
-                      >
-                        Register
-                      </button>
-                      <button
-                        className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-                        onClick={() => setShowRegister(false)}
-                      >
-                        Back to Login
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          }
-
-          return (
-            <div className="p-6 max-w-4xl mx-auto bg-gray-100 min-h-screen">
-              <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold">F1 2025 Tipping Competition</h1>
-                <div className="flex items-center">
-                  <span className="mr-4">Logged in as <strong>{currentUser.name}</strong></span>
-                  <button 
-                    className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded"
-                    onClick={handleLogout}
-                  >
+        <!-- Main App (hidden until login) -->
+        <div id="mainApp" class="hidden">
+            <!-- User bar -->
+            <div class="flex justify-between items-center mb-6 bg-white p-4 rounded shadow">
+                <h2 class="text-xl font-semibold">Welcome, <span id="userName">User</span>!</h2>
+                <button 
+                    class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded"
+                    onclick="logout()"
+                >
                     Logout
-                  </button>
+                </button>
+            </div>
+            
+            <!-- Leaderboard -->
+            <div class="p-4 bg-white rounded shadow mb-6">
+                <h2 class="text-xl font-semibold mb-3">Leaderboard</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left">Position</th>
+                                <th class="py-2 px-4 border-b text-left">Player</th>
+                                <th class="py-2 px-4 border-b text-left">Total Score</th>
+                                <th class="py-2 px-4 border-b text-center">R1</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-yellow-100" id="player1Row">
+                                <td class="py-2 px-4 border-b">1</td>
+                                <td class="py-2 px-4 border-b">Scotty</td>
+                                <td class="py-2 px-4 border-b font-bold">6</td>
+                                <td class="py-2 px-4 border-b text-center">6</td>
+                            </tr>
+                            <tr id="player2Row">
+                                <td class="py-2 px-4 border-b">2</td>
+                                <td class="py-2 px-4 border-b">Lina</td>
+                                <td class="py-2 px-4 border-b font-bold">15</td>
+                                <td class="py-2 px-4 border-b text-center">15</td>
+                            </tr>
+                            <tr id="player3Row">
+                                <td class="py-2 px-4 border-b">3</td>
+                                <td class="py-2 px-4 border-b">Steve</td>
+                                <td class="py-2 px-4 border-b font-bold">21</td>
+                                <td class="py-2 px-4 border-b text-center">21</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-              </div>
-              
-              {/* Race selection */}
-              <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">Select Race</h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full bg-white">
-                    <thead>
-                      <tr>
-                        <th className="py-2 px-4 border-b text-left">Round</th>
-                        <th className="py-2 px-4 border-b text-left">Race</th>
-                        <th className="py-2 px-4 border-b text-left">Circuit</th>
-                        <th className="py-2 px-4 border-b text-left">Date</th>
-                        <th className="py-2 px-4 border-b text-left">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {races.map(race => (
-                        <tr key={race.id} className={`
-                          ${race.completed ? 'bg-gray-100' : ''} 
-                          ${isRaceLocked(race.id) && !race.completed ? 'bg-yellow-50' : ''} 
-                          ${currentRace === race.id ? 'bg-blue-100' : ''}
-                        `}>
-                          <td className="py-2 px-4 border-b">{race.id}</td>
-                          <td className="py-2 px-4 border-b">{race.name}</td>
-                          <td className="py-2 px-4 border-b">{race.circuit}</td>
-                          <td className="py-2 px-4 border-b">{new Date(race.date).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</td>
-                          <td className="py-2 px-4 border-b">
-                            <button
-                              className={`px-4 py-1 rounded 
-                                ${currentRace === race.id ? 'bg-blue-500 text-white' : 'bg-gray-200'} 
-                                ${race.completed ? 'line-through opacity-50' : ''}
-                                ${isRaceLocked(race.id) && !race.completed ? 'bg-yellow-500 text-white' : ''}`}
-                              onClick={() => setCurrentRace(race.id)}
-                              disabled={race.completed}
-                              title={race.completed ? 'Race completed' : isRaceLocked(race.id) ? 'Submissions locked' : 'Select race'}
-                            >
-                              {currentRace === race.id ? 'Selected' : race.completed ? 'Completed' : isRaceLocked(race.id) ? 'Locked' : 'Select'}
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+            </div>
+            
+            <!-- Race Selection -->
+            <div class="mb-6 p-4 bg-white rounded shadow">
+                <h2 class="text-xl font-semibold mb-3">Select Race</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left">Round</th>
+                                <th class="py-2 px-4 border-b text-left">Race</th>
+                                <th class="py-2 px-4 border-b text-left">Circuit</th>
+                                <th class="py-2 px-4 border-b text-left">Date</th>
+                                <th class="py-2 px-4 border-b text-left">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-gray-100">
+                                <td class="py-2 px-4 border-b">1</td>
+                                <td class="py-2 px-4 border-b">Australian Grand Prix</td>
+                                <td class="py-2 px-4 border-b">Albert Park</td>
+                                <td class="py-2 px-4 border-b">Mar 16, 2025</td>
+                                <td class="py-2 px-4 border-b">
+                                    <button class="px-4 py-1 rounded bg-gray-400 text-white line-through opacity-50" disabled>
+                                        Completed
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="bg-blue-100">
+                                <td class="py-2 px-4 border-b">2</td>
+                                <td class="py-2 px-4 border-b">Chinese Grand Prix</td>
+                                <td class="py-2 px-4 border-b">Shanghai International Circuit</td>
+                                <td class="py-2 px-4 border-b">Mar 23, 2025</td>
+                                <td class="py-2 px-4 border-b">
+                                    <button class="px-4 py-1 rounded bg-blue-500 text-white" onclick="selectRace(2)">
+                                        Selected
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b">3</td>
+                                <td class="py-2 px-4 border-b">Japanese Grand Prix</td>
+                                <td class="py-2 px-4 border-b">Suzuka</td>
+                                <td class="py-2 px-4 border-b">Apr 6, 2025</td>
+                                <td class="py-2 px-4 border-b">
+                                    <button class="px-4 py-1 rounded bg-gray-200" onclick="selectRace(3)">
+                                        Select
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-              </div>
-              
-              {/* Driver selection form with team grouping */}
-              <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">Pick Drivers for Round {currentRace}: {races.find(r => r.id === currentRace)?.name} ({races.find(r => r.id === currentRace)?.circuit})</h2>
+            </div>
+            
+            <!-- Driver Selection for Selected Race -->
+            <div class="mb-6 p-4 bg-white rounded shadow">
+                <h2 class="text-xl font-semibold mb-3" id="racePicksTitle">Pick Drivers for Round 2: Chinese Grand Prix (Shanghai International Circuit)</h2>
                 
-                {/* First place */}
-                <div className="mb-4">
-                  <label className="block mb-2 font-medium">1st Place</label>
-                  <select 
-                    className="w-full p-2 border rounded"
-                    value={picks.first || ''}
-                    onChange={(e) => setPicks({...picks, first: Number(e.target.value)})}
-                    disabled={isRaceLocked(currentRace)}
-                  >
-                    <option value="">Select a driver</option>
-                    {Array.from(new Set(drivers.map(driver => driver.team))).sort().map(team => (
-                      <optgroup key={team} label={team}>
-                        {drivers.filter(driver => driver.team === team).map(driver => (
-                          <option key={driver.id} value={driver.id}>
-                            {driver.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </select>
+                <!-- First place -->
+                <div class="mb-4">
+                    <label class="block mb-2 font-medium">1st Place</label>
+                    <select class="w-full p-2 border rounded" id="firstPlace">
+                        <option value="">Select a driver</option>
+                        <optgroup label="Red Bull">
+                            <option value="1">Max Verstappen</option>
+                            <option value="2">Liam Lawson</option>
+                        </optgroup>
+                        <optgroup label="Ferrari">
+                            <option value="3">Charles Leclerc</option>
+                            <option value="4">Lewis Hamilton</option>
+                        </optgroup>
+                        <optgroup label="Mercedes">
+                            <option value="5">Kimi Antonelli</option>
+                            <option value="6">George Russell</option>
+                        </optgroup>
+                        <optgroup label="McLaren">
+                            <option value="7">Lando Norris</option>
+                            <option value="8">Oscar Piastri</option>
+                        </optgroup>
+                        <!-- More drivers would be here -->
+                    </select>
                 </div>
                 
-                {/* Second place */}
-                <div className="mb-4">
-                  <label className="block mb-2 font-medium">2nd Place</label>
-                  <select 
-                    className="w-full p-2 border rounded"
-                    value={picks.second || ''}
-                    onChange={(e) => setPicks({...picks, second: Number(e.target.value)})}
-                    disabled={isRaceLocked(currentRace)}
-                  >
-                    <option value="">Select a driver</option>
-                    {Array.from(new Set(drivers.map(driver => driver.team))).sort().map(team => (
-                      <optgroup key={team} label={team}>
-                        {drivers.filter(driver => driver.team === team).map(driver => (
-                          <option key={driver.id} value={driver.id}>
-                            {driver.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </select>
+                <!-- Second place -->
+                <div class="mb-4">
+                    <label class="block mb-2 font-medium">2nd Place</label>
+                    <select class="w-full p-2 border rounded" id="secondPlace">
+                        <option value="">Select a driver</option>
+                        <optgroup label="Red Bull">
+                            <option value="1">Max Verstappen</option>
+                            <option value="2">Liam Lawson</option>
+                        </optgroup>
+                        <optgroup label="Ferrari">
+                            <option value="3">Charles Leclerc</option>
+                            <option value="4">Lewis Hamilton</option>
+                        </optgroup>
+                        <optgroup label="Mercedes">
+                            <option value="5">Kimi Antonelli</option>
+                            <option value="6">George Russell</option>
+                        </optgroup>
+                        <optgroup label="McLaren">
+                            <option value="7">Lando Norris</option>
+                            <option value="8">Oscar Piastri</option>
+                        </optgroup>
+                        <!-- More drivers would be here -->
+                    </select>
                 </div>
                 
-                {/* Third place */}
-                <div className="mb-4">
-                  <label className="block mb-2 font-medium">3rd Place</label>
-                  <select 
-                    className="w-full p-2 border rounded"
-                    value={picks.third || ''}
-                    onChange={(e) => setPicks({...picks, third: Number(e.target.value)})}
-                    disabled={isRaceLocked(currentRace)}
-                  >
-                    <option value="">Select a driver</option>
-                    {Array.from(new Set(drivers.map(driver => driver.team))).sort().map(team => (
-                      <optgroup key={team} label={team}>
-                        {drivers.filter(driver => driver.team === team).map(driver => (
-                          <option key={driver.id} value={driver.id}>
-                            {driver.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </select>
+                <!-- Third place -->
+                <div class="mb-4">
+                    <label class="block mb-2 font-medium">3rd Place</label>
+                    <select class="w-full p-2 border rounded" id="thirdPlace">
+                        <option value="">Select a driver</option>
+                        <optgroup label="Red Bull">
+                            <option value="1">Max Verstappen</option>
+                            <option value="2">Liam Lawson</option>
+                        </optgroup>
+                        <optgroup label="Ferrari">
+                            <option value="3">Charles Leclerc</option>
+                            <option value="4">Lewis Hamilton</option>
+                        </optgroup>
+                        <optgroup label="Mercedes">
+                            <option value="5">Kimi Antonelli</option>
+                            <option value="6">George Russell</option>
+                        </optgroup>
+                        <optgroup label="McLaren">
+                            <option value="7">Lando Norris</option>
+                            <option value="8">Oscar Piastri</option>
+                        </optgroup>
+                        <!-- More drivers would be here -->
+                    </select>
                 </div>
                 
                 <button 
-                  className={`px-4 py-2 ${isRaceLocked(currentRace) ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'} text-white rounded w-full`}
-                  onClick={savePicks}
-                  disabled={isRaceLocked(currentRace)}
+                    class="px-4 py-2 bg-blue-500 text-white rounded w-full"
+                    onclick="savePicks()"
                 >
-                  {isRaceLocked(currentRace) ? 'Submissions Locked' : 'Save Picks'}
+                    Save Picks
                 </button>
-                
-                {isRaceLocked(currentRace) && !races.find(r => r.id === currentRace)?.completed && (
-                  <p className="mt-2 text-sm text-yellow-600">
-                    This race is locked for submissions. Picks can no longer be changed.
-                  </p>
-                )}
-                
-                {races.find(r => r.id === currentRace)?.completed && (
-                  <p className="mt-2 text-sm text-gray-600">
-                    This race has already been completed. Results are now available.
-                  </p>
-                )}
-              </div>
-              
-              {/* My Picks Display - only show current/upcoming races */}
-              <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">My Upcoming Picks</h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full bg-white">
-                    <thead>
-                      <tr>
-                        <th className="py-2 px-4 border-b text-left">Race</th>
-                        <th className="py-2 px-4 border-b text-left">1st Place</th>
-                        <th className="py-2 px-4 border-b text-left">2nd Place</th>
-                        <th className="py-2 px-4 border-b text-left">3rd Place</th>
-                        <th className="py-2 px-4 border-b text-left">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(currentUser.picks)
-                        .filter(([raceId]) => !races.find(r => r.id === Number(raceId))?.completed)
-                        .length > 0 ? (
-                        Object.entries(currentUser.picks)
-                          .filter(([raceId]) => !races.find(r => r.id === Number(raceId))?.completed)
-                          .map(([raceId, racePicks]) => {
-                            const race = races.find(r => r.id === Number(raceId));
-                            return (
-                              <tr key={raceId}>
-                                <td className="py-2 px-4 border-b">Round {raceId}: {race?.name}</td>
-                                <td className="py-2 px-4 border-b">
-                                  {drivers.find(d => d.id === racePicks.first)?.name}
-                                  {drivers.find(d => d.id === racePicks.first) && 
-                                    <span 
-                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                      style={{
-                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.bg || '#ccc',
-                                        color: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.text || 'black'
-                                      }}
-                                    >
-                                      {drivers.find(d => d.id === racePicks.first)?.team}
-                                    </span>
-                                  }
-                                </td>
-                                <td className="py-2 px-4 border-b">
-                                  {drivers.find(d => d.id === racePicks.second)?.name}
-                                  {drivers.find(d => d.id === racePicks.second) && 
-                                    <span 
-                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                      style={{
-                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.bg || '#ccc',
-                                        color: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.text || 'black'
-                                      }}
-                                    >
-                                      {drivers.find(d => d.id === racePicks.second)?.team}
-                                    </span>
-                                  }
-                                </td>
-                                <td className="py-2 px-4 border-b">
-                                  {drivers.find(d => d.id === racePicks.third)?.name}
-                                  {drivers.find(d => d.id === racePicks.third) && 
-                                    <span 
-                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                      style={{
-                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.bg || '#ccc',
-                                        color: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.text || 'black'
-                                      }}
-                                    >
-                                      {drivers.find(d => d.id === racePicks.third)?.team}
-                                    </span>
-                                  }
-                                </td>
-                                <td className="py-2 px-4 border-b">
-                                  {isRaceLocked(Number(raceId)) ? (
-                                    <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">
-                                      Locked
-                                    </span>
-                                  ) : (
-                                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">
-                                      Editable
-                                    </span>
-                                  )}
-                                </td>
-                              </tr>
-                            );
-                          })
-                      ) : (
-                        <tr>
-                          <td colSpan="5" className="py-4 text-center text-gray-500">
-                            You haven't made any picks for upcoming races. Select a race and submit your predictions!
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              
-              {/* Historical Picks - completed races */}
-              <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">My Historical Picks</h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full bg-white">
-                    <thead>
-                      <tr>
-                        <th className="py-2 px-4 border-b text-left">Race</th>
-                        <th className="py-2 px-4 border-b text-left">1st Place</th>
-                        <th className="py-2 px-4 border-b text-left">2nd Place</th>
-                        <th className="py-2 px-4 border-b text-left">3rd Place</th>
-                        <th className="py-2 px-4 border-b text-left">Score</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(currentUser.picks)
-                        .filter(([raceId]) => races.find(r => r.id === Number(raceId))?.completed)
-                        .length > 0 ? (
-                        Object.entries(currentUser.picks)
-                          .filter(([raceId]) => races.find(r => r.id === Number(raceId))?.completed)
-                          .map(([raceId, racePicks]) => {
-                            const race = races.find(r => r.id === Number(raceId));
-                            return (
-                              <tr key={raceId} className="bg-gray-50">
-                                <td className="py-2 px-4 border-b">Round {raceId}: {race?.name}</td>
-                                <td className="py-2 px-4 border-b">
-                                  {drivers.find(d => d.id === racePicks.first)?.name}
-                                  {drivers.find(d => d.id === racePicks.first) && 
-                                    <span 
-                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                      style={{
-                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.bg || '#ccc',
-                                        color: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.text || 'black'
-                                      }}
-                                    >
-                                      {drivers.find(d => d.id === racePicks.first)?.team}
-                                    </span>
-                                  }
-                                </td>
-                                <td className="py-2 px-4 border-b">
-                                  {drivers.find(d => d.id === racePicks.second)?.name}
-                                  {drivers.find(d => d.id === racePicks.second) && 
-                                    <span 
-                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                      style={{
-                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.bg || '#ccc',
-                                        color: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.text || 'black'
-                                      }}
-                                    >
-                                      {drivers.find(d => d.id === racePicks.second)?.team}
-                                    </span>
-                                  }
-                                </td>
-                                <td className="py-2 px-4 border-b">
-                                  {drivers.find(d => d.id === racePicks.third)?.name}
-                                  {drivers.find(d => d.id === racePicks.third) && 
-                                    <span 
-                                      className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                      style={{
-                                        backgroundColor: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.bg || '#ccc',
-                                        color: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.text || 'black'
-                                      }}
-                                    >
-                                      {drivers.find(d => d.id === racePicks.third)?.team}
-                                    </span>
-                                  }
-                                </td>
-                                <td className="py-2 px-4 border-b font-bold">
-                                  {currentUser.scores[raceId] || '-'}
-                                </td>
-                              </tr>
-                            );
-                          })
-                      ) : (
-                        <tr>
-                          <td colSpan="5" className="py-4 text-center text-gray-500">
-                            No historical picks available yet. Completed races will appear here.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              
-              {/* Completed Races Results */}
-              <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">Completed Race Results</h2>
-                
-                {races.filter(race => race.completed).length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white">
-                      <thead>
-                        <tr>
-                          <th className="py-2 px-4 border-b text-left">Race</th>
-                          <th className="py-2 px-4 border-b text-center">1st</th>
-                          <th className="py-2 px-4 border-b text-center">2nd</th>
-                          <th className="py-2 px-4 border-b text-center">3rd</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {races.filter(race => race.completed).map(race => (
-                          <tr key={race.id}>
-                            <td className="py-2 px-4 border-b">Round {race.id}: {race.name}</td>
-                            <td className="py-2 px-4 border-b text-center">
-                              {race.results && race.results[0] && (
-                                <div className="flex items-center justify-center">
-                                  <span 
-                                    className="inline-block w-3 h-3 rounded-full mr-2"
-                                    style={{
-                                      backgroundColor: teamColors[drivers.find(d => d.id === race.results[0])?.team]?.bg || '#ccc'
-                                    }}
-                                  ></span>
-                                  {drivers.find(d => d.id === race.results[0])?.name}
-                                </div>
-                              )}
-                            </td>
-                            <td className="py-2 px-4 border-b text-center">
-                              {race.results && race.results[1] && (
-                                <div className="flex items-center justify-center">
-                                  <span 
-                                    className="inline-block w-3 h-3 rounded-full mr-2"
-                                    style={{
-                                      backgroundColor: teamColors[drivers.find(d => d.id === race.results[1])?.team]?.bg || '#ccc'
-                                    }}
-                                  ></span>
-                                  {drivers.find(d => d.id === race.results[1])?.name}
-                                </div>
-                              )}
-                            </td>
-                            <td className="py-2 px-4 border-b text-center">
-                              {race.results && race.results[2] && (
-                                <div className="flex items-center justify-center">
-                                  <span 
-                                    className="inline-block w-3 h-3 rounded-full mr-2"
-                                    style={{
-                                      backgroundColor: teamColors[drivers.find(d => d.id === race.results[2])?.team]?.bg || '#ccc'
-                                    }}
-                                  ></span>
-                                  {drivers.find(d => d.id === race.results[2])?.name}
-                                </div>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p>No races have been completed yet.</p>
-                )}
-              </div>
-              
-              {/* Leaderboard */}
-              <div className="p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">Leaderboard</h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full bg-white">
-                    <thead>
-                      <tr>
-                        <th className="py-2 px-4 border-b text-left">Position</th>
-                        <th className="py-2 px-4 border-b text-left">Player</th>
-                        <th className="py-2 px-4 border-b text-left">Total Score</th>
-                        {races.filter(race => race.completed).map(race => (
-                          <th key={race.id} className="py-2 px-4 border-b text-center">R{race.id}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {leaderboard.map((player, index) => (
-                        <tr 
-                          key={player.id} 
-                          className={`${index === 0 ? 'bg-yellow-100' : ''} ${player.id === currentUser?.id ? 'bg-blue-50' : ''}`}
-                        >
-                          <td className="py-2 px-4 border-b">{index + 1}</td>
-                          <td className="py-2 px-4 border-b">
-                            {player.name} {player.id === currentUser?.id && '(You)'}
-                          </td>
-                          <td className="py-2 px-4 border-b font-bold">{player.score}</td>
-                          {races.filter(race => race.completed).map(race => {
-                            const user = users.find(u => u.id === player.id);
-                            const raceScore = user?.scores[race.id] || '-';
-                            return (
-                              <td key={race.id} className="py-2 px-4 border-b text-center">
-                                {raceScore}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
             </div>
-          );
-        };
-
-        // Mount the React app
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<F1TippingApp />);
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>F1 2025 Tipping Competition</title>
-    <!-- Tailwind CSS CDN for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React and ReactDOM -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Babel for JSX support -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Recharts library for any future visualizations -->
-    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
-    <style>
-        /* Additional custom styles */
-        body {
-            background-color: #f1f5f9;
-        }
-        .f1-header {
-            background-image: linear-gradient(to right, #e10600, #ff0100);
-            color: white;
-        }
-    </style>
-</head>
-<body>
-    <!-- Header section -->
-    <header class="f1-header p-4 shadow-md">
-        <div class="container mx-auto">
-            <h1 class="text-3xl font-bold">F1 2025 Tipping Competition</h1>
+            
+            <!-- Historical Picks (completed races) -->
+            <div class="mb-6 p-4 bg-white rounded shadow">
+                <h2 class="text-xl font-semibold mb-3">My Historical Picks</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left">Race</th>
+                                <th class="py-2 px-4 border-b text-left">1st Place</th>
+                                <th class="py-2 px-4 border-b text-left">2nd Place</th>
+                                <th class="py-2 px-4 border-b text-left">3rd Place</th>
+                                <th class="py-2 px-4 border-b text-left">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historicalPicks">
+                            <!-- Picks will be populated based on login -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Completed Race Results -->
+            <div class="mb-6 p-4 bg-white rounded shadow">
+                <h2 class="text-xl font-semibold mb-3">Completed Race Results</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 border-b text-left">Race</th>
+                                <th class="py-2 px-4 border-b text-center">1st</th>
+                                <th class="py-2 px-4 border-b text-center">2nd</th>
+                                <th class="py-2 px-4 border-b text-center">3rd</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-2 px-4 border-b">Round 1: Australian Grand Prix</td>
+                                <td class="py-2 px-4 border-b text-center">
+                                    <div class="flex items-center justify-center">
+                                        <span class="inline-block w-3 h-3 rounded-full mr-2" style="background-color: #FF8700;"></span>
+                                        Lando Norris
+                                    </div>
+                                </td>
+                                <td class="py-2 px-4 border-b text-center">
+                                    <div class="flex items-center justify-center">
+                                        <span class="inline-block w-3 h-3 rounded-full mr-2" style="background-color: #0600EF;"></span>
+                                        Max Verstappen
+                                    </div>
+                                </td>
+                                <td class="py-2 px-4 border-b text-center">
+                                    <div class="flex items-center justify-center">
+                                        <span class="inline-block w-3 h-3 rounded-full mr-2" style="background-color: #00D2BE;"></span>
+                                        George Russell
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </header>
-
-    <!-- Main app container -->
-    <div id="root" class="container mx-auto py-6"></div>
+    </div>
 
     <!-- Footer -->
     <footer class="bg-gray-800 text-white p-4 mt-8">
@@ -920,502 +341,209 @@
         </div>
     </footer>
 
-    <!-- Main app script -->
-    <script type="text/babel">
-        const F1TippingApp = () => {
-          // Team colors for styling
-          const teamColors = {
-            'Red Bull': { bg: '#0600EF', text: 'white' },
-            'Ferrari': { bg: '#F91536', text: 'white' },
-            'Mercedes': { bg: '#00D2BE', text: 'black' },
-            'McLaren': { bg: '#FF8700', text: 'black' },
-            'Aston Martin': { bg: '#006F62', text: 'white' },
-            'Alpine': { bg: '#0090FF', text: 'white' },
-            'Williams': { bg: '#005AFF', text: 'white' },
-            'Racing Bulls': { bg: '#1E41FF', text: 'white' },
-            'Haas': { bg: '#B6BABD', text: 'black' },
-            'Sauber': { bg: '#52E252', text: 'black' }
-          };
+    <script>
+        // User data
+        const users = [
+            { 
+                id: 1, 
+                username: 'scotty', 
+                password: 'pass1', 
+                name: 'Scotty', 
+                picks: {
+                    '1': { first: 7, second: 1, third: 8 }
+                }, 
+                scores: {
+                    '1': 6
+                } 
+            },
+            { 
+                id: 2, 
+                username: 'lina', 
+                password: 'pass2', 
+                name: 'Lina', 
+                picks: {
+                    '1': { first: 3, second: 8, third: 1 }
+                }, 
+                scores: {
+                    '1': 15
+                } 
+            },
+            { 
+                id: 3, 
+                username: 'steve', 
+                password: 'pass3', 
+                name: 'Steve', 
+                picks: {
+                    '1': { first: 3, second: 8, third: 4 }
+                }, 
+                scores: {
+                    '1': 21
+                } 
+            },
+        ];
+        
+        // Driver data
+        const drivers = [
+            { id: 1, name: 'Max Verstappen', team: 'Red Bull', color: '#0600EF', textColor: 'white' },
+            { id: 2, name: 'Liam Lawson', team: 'Red Bull', color: '#0600EF', textColor: 'white' },
+            { id: 3, name: 'Charles Leclerc', team: 'Ferrari', color: '#F91536', textColor: 'white' },
+            { id: 4, name: 'Lewis Hamilton', team: 'Ferrari', color: '#F91536', textColor: 'white' },
+            { id: 5, name: 'Kimi Antonelli', team: 'Mercedes', color: '#00D2BE', textColor: 'black' },
+            { id: 6, name: 'George Russell', team: 'Mercedes', color: '#00D2BE', textColor: 'black' },
+            { id: 7, name: 'Lando Norris', team: 'McLaren', color: '#FF8700', textColor: 'black' },
+            { id: 8, name: 'Oscar Piastri', team: 'McLaren', color: '#FF8700', textColor: 'black' }
+            // More drivers would be included here
+        ];
 
-          // State for drivers, races, users and their picks
-          const [drivers, setDrivers] = React.useState([
-            { id: 1, name: 'Max Verstappen', team: 'Red Bull' },
-            { id: 2, name: 'Liam Lawson', team: 'Red Bull' },
-            { id: 3, name: 'Charles Leclerc', team: 'Ferrari' },
-            { id: 4, name: 'Lewis Hamilton', team: 'Ferrari' },
-            { id: 5, name: 'Kimi Antonelli', team: 'Mercedes' },
-            { id: 6, name: 'George Russell', team: 'Mercedes' },
-            { id: 7, name: 'Lando Norris', team: 'McLaren' },
-            { id: 8, name: 'Oscar Piastri', team: 'McLaren' },
-            { id: 9, name: 'Lance Stroll', team: 'Aston Martin' },
-            { id: 10, name: 'Fernando Alonso', team: 'Aston Martin' },
-            { id: 11, name: 'Pierre Gasly', team: 'Alpine' },
-            { id: 12, name: 'Jack Doohan', team: 'Alpine' },
-            { id: 13, name: 'Alex Albon', team: 'Williams' },
-            { id: 14, name: 'Carlos Sainz', team: 'Williams' },
-            { id: 15, name: 'Yuki Tsunoda', team: 'Racing Bulls' },
-            { id: 16, name: 'Isack Hadjar', team: 'Racing Bulls' },
-            { id: 17, name: 'Oliver Bearman', team: 'Haas' },
-            { id: 18, name: 'Esteban Ocon', team: 'Haas' },
-            { id: 19, name: 'Nico Hülkenberg', team: 'Sauber' },
-            { id: 20, name: 'Gabriel Bortoleto', team: 'Sauber' },
-          ]);
-
-          const [races, setRaces] = React.useState([
-            { id: 1, name: 'Australian Grand Prix', circuit: 'Albert Park', date: '2025-03-16', completed: false, results: [] },
-            { id: 2, name: 'Chinese Grand Prix', circuit: 'Shanghai International Circuit', date: '2025-03-23', completed: false, results: [] },
-            { id: 3, name: 'Japanese Grand Prix', circuit: 'Suzuka', date: '2025-04-06', completed: false, results: [] },
-            { id: 4, name: 'Bahrain Grand Prix', circuit: 'Bahrain International Circuit', date: '2025-04-13', completed: false, results: [] },
-            { id: 5, name: 'Saudi Arabian Grand Prix', circuit: 'Jeddah Corniche Circuit', date: '2025-04-20', completed: false, results: [] },
-            { id: 6, name: 'Miami Grand Prix', circuit: 'Miami International Autodrome', date: '2025-05-04', completed: false, results: [] },
-            { id: 7, name: 'Emilia Romagna Grand Prix', circuit: 'Imola', date: '2025-05-18', completed: false, results: [] },
-            { id: 8, name: 'Monaco Grand Prix', circuit: 'Monaco', date: '2025-05-25', completed: false, results: [] },
-            { id: 9, name: 'Spanish Grand Prix', circuit: 'Circuit de Catalunya', date: '2025-06-01', completed: false, results: [] },
-            { id: 10, name: 'Canadian Grand Prix', circuit: 'Circuit Gilles Villeneuve', date: '2025-06-15', completed: false, results: [] },
-            { id: 11, name: 'Austrian Grand Prix', circuit: 'Red Bull Ring', date: '2025-06-29', completed: false, results: [] },
-            { id: 12, name: 'British Grand Prix', circuit: 'Silverstone', date: '2025-07-06', completed: false, results: [] },
-            { id: 13, name: 'Belgian Grand Prix', circuit: 'Spa-Francorchamps', date: '2025-07-27', completed: false, results: [] },
-            { id: 14, name: 'Hungarian Grand Prix', circuit: 'Hungaroring', date: '2025-08-03', completed: false, results: [] },
-            { id: 15, name: 'Dutch Grand Prix', circuit: 'Zandvoort', date: '2025-08-31', completed: false, results: [] },
-            { id: 16, name: 'Italian Grand Prix', circuit: 'Monza', date: '2025-09-07', completed: false, results: [] },
-            { id: 17, name: 'Azerbaijan Grand Prix', circuit: 'Baku City Circuit', date: '2025-09-21', completed: false, results: [] },
-            { id: 18, name: 'Singapore Grand Prix', circuit: 'Singapore', date: '2025-10-05', completed: false, results: [] },
-            { id: 19, name: 'United States Grand Prix', circuit: 'Circuit of the Americas', date: '2025-10-19', completed: false, results: [] },
-            { id: 20, name: 'Mexican Grand Prix', circuit: 'Autodromo Hermanos Rodriguez', date: '2025-10-26', completed: false, results: [] },
-            { id: 21, name: 'Brazilian Grand Prix', circuit: 'Interlagos', date: '2025-11-09', completed: false, results: [] },
-            { id: 22, name: 'Las Vegas Grand Prix', circuit: 'Las Vegas Strip Circuit', date: '2025-11-22', completed: false, results: [] },
-            { id: 23, name: 'Qatar Grand Prix', circuit: 'Losail International Circuit', date: '2025-11-30', completed: false, results: [] },
-            { id: 24, name: 'Abu Dhabi Grand Prix', circuit: 'Yas Marina', date: '2025-12-07', completed: false, results: [] },
-          ]);
-
-          const [users, setUsers] = React.useState([
-            { id: 1, name: 'Player 1', picks: {}, scores: {} },
-            { id: 2, name: 'Player 2', picks: {}, scores: {} },
-          ]);
-
-          const [currentUser, setCurrentUser] = React.useState(1);
-          const [currentRace, setCurrentRace] = React.useState(1);
-          const [picks, setPicks] = React.useState({ first: null, second: null, third: null });
-          const [leaderboard, setLeaderboard] = React.useState([]);
-
-          // Check if race is locked (completed or past deadline)
-          const isRaceLocked = (raceId) => {
-            const race = races.find(r => r.id === raceId);
-            if (!race) return true;
+        let currentUser = null;
+        let currentRace = 2;
+        
+        // Login function
+        function login() {
+            const username = document.getElementById('username').value.toLowerCase().trim();
+            const password = document.getElementById('password').value;
             
-            // Race is locked if completed
-            if (race.completed) return true;
+            const user = users.find(u => u.username.toLowerCase() === username && u.password === password);
             
-            // Race is locked if it's in the past
-            const raceDate = new Date(race.date);
-            const now = new Date();
-            const deadline = new Date(raceDate);
-            deadline.setDate(deadline.getDate() - 1); // Lock 1 day before race
-            
-            return now > deadline;
-          };
-
-          // Calculate points based on actual finishing position
-          const calculatePoints = (predictedPosition, actualPosition) => {
-            if (actualPosition === null) return 0;
-            return Math.abs(predictedPosition - actualPosition);
-          };
-
-          // Update user picks for a race
-          const savePicks = () => {
-            if (!picks.first || !picks.second || !picks.third) {
-              alert('Please select all three positions');
-              return;
+            if (user) {
+                currentUser = user;
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                document.getElementById('userName').textContent = user.name;
+                
+                // Highlight the current user in the leaderboard
+                document.querySelectorAll('#player1Row, #player2Row, #player3Row').forEach(row => {
+                    row.classList.remove('bg-blue-50');
+                });
+                
+                if (user.id === 1) document.getElementById('player1Row').classList.add('bg-blue-50');
+                if (user.id === 2) document.getElementById('player2Row').classList.add('bg-blue-50');
+                if (user.id === 3) document.getElementById('player3Row').classList.add('bg-blue-50');
+                
+                // Load historical picks
+                loadHistoricalPicks();
+                
+                console.log("Logged in as:", user.name);
+            } else {
+                alert('Invalid username or password');
             }
-
-            if (picks.first === picks.second || picks.first === picks.third || picks.second === picks.third) {
-              alert('Please select different drivers for each position');
-              return;
+        }
+        
+        // Logout function
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+        
+        // Select race
+        function selectRace(raceId) {
+            currentRace = raceId;
+            document.getElementById('racePicksTitle').textContent = `Pick Drivers for Round ${raceId}: ${raceId === 2 ? 'Chinese Grand Prix (Shanghai International Circuit)' : 'Japanese Grand Prix (Suzuka)'}`;
+            
+            // Update race selection UI
+            // In a full implementation, this would update the table to highlight the selected race
+        }
+        
+        // Save picks
+        function savePicks() {
+            const first = document.getElementById('firstPlace').value;
+            const second = document.getElementById('secondPlace').value;
+            const third = document.getElementById('thirdPlace').value;
+            
+            if (!first || !second || !third) {
+                alert('Please select all three positions');
+                return;
             }
             
-            // Check if the race is locked
-            if (isRaceLocked(currentRace)) {
-              alert('Submissions for this race are locked. Either the race is completed or the deadline has passed.');
-              return;
+            if (first === second || first === third || second === third) {
+                alert('Please select different drivers for each position');
+                return;
             }
-
-            const updatedUsers = users.map(user => {
-              if (user.id === currentUser) {
-                const updatedPicks = { ...user.picks };
-                updatedPicks[currentRace] = { ...picks };
-                return { ...user, picks: updatedPicks };
-              }
-              return user;
-            });
-
-            setUsers(updatedUsers);
+            
+            // In a real implementation, this would save to a database or localStorage
+            if (!currentUser.picks) {
+                currentUser.picks = {};
+            }
+            
+            currentUser.picks[currentRace] = {
+                first: parseInt(first),
+                second: parseInt(second),
+                third: parseInt(third)
+            };
+            
             alert('Picks saved successfully!');
-            setPicks({ first: null, second: null, third: null });
-          };
-
-          // Add a new player
-          const addPlayer = () => {
-            const newPlayerId = users.length + 1;
-            setUsers([...users, { id: newPlayerId, name: `Player ${newPlayerId}`, picks: {}, scores: {} }]);
-          };
-          
-          // Load data from localStorage on component mount
-          React.useEffect(() => {
-            const savedData = localStorage.getItem('f1TippingData');
-            if (savedData) {
-              const data = JSON.parse(savedData);
-              if (data.users) setUsers(data.users);
-              if (data.races) setRaces(data.races);
-            }
+            console.log(`Saved picks for ${currentUser.name}, Race ${currentRace}:`, currentUser.picks[currentRace]);
+        }
+        
+        // Load historical picks
+        function loadHistoricalPicks() {
+            const historicalTable = document.getElementById('historicalPicks');
+            historicalTable.innerHTML = '';
             
-            // Calculate leaderboard based on existing data
-            const board = users.map(user => {
-              const totalScore = Object.values(user.scores).reduce((sum, score) => sum + score, 0);
-              return { id: user.id, name: user.name, score: totalScore };
-            });
-            board.sort((a, b) => a.score - b.score);
-            setLeaderboard(board);
-          }, []);
-          
-          // Save data to localStorage when state changes
-          React.useEffect(() => {
-            localStorage.setItem('f1TippingData', JSON.stringify({
-              users: users,
-              races: races
-            }));
-          }, [users, races]);
-
-          return (
-            <div className="p-6 max-w-4xl mx-auto bg-gray-100 min-h-screen">
-              <h1 className="text-3xl font-bold mb-6 text-center">F1 2025 Tipping Competition</h1>
-              
-              {/* User selection */}
-              <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">Select Player</h2>
-                <div className="flex flex-wrap gap-2">
-                  {users.map(user => (
-                    <button
-                      key={user.id}
-                      className={`px-4 py-2 rounded ${currentUser === user.id ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                      onClick={() => setCurrentUser(user.id)}
-                    >
-                      {user.name}
-                    </button>
-                  ))}
-                  <button
-                    className="px-4 py-2 rounded bg-green-500 text-white"
-                    onClick={addPlayer}
-                  >
-                    + Add Player
-                  </button>
-                </div>
-              </div>
-              
-              {/* Race selection */}
-              <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">Select Race</h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full bg-white">
-                    <thead>
-                      <tr>
-                        <th className="py-2 px-4 border-b text-left">Round</th>
-                        <th className="py-2 px-4 border-b text-left">Race</th>
-                        <th className="py-2 px-4 border-b text-left">Circuit</th>
-                        <th className="py-2 px-4 border-b text-left">Date</th>
-                        <th className="py-2 px-4 border-b text-left">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {races.map(race => (
-                        <tr key={race.id} className={`
-                          ${race.completed ? 'bg-gray-100' : ''} 
-                          ${isRaceLocked(race.id) && !race.completed ? 'bg-yellow-50' : ''} 
-                          ${currentRace === race.id ? 'bg-blue-100' : ''}
-                        `}>
-                          <td className="py-2 px-4 border-b">{race.id}</td>
-                          <td className="py-2 px-4 border-b">{race.name}</td>
-                          <td className="py-2 px-4 border-b">{race.circuit}</td>
-                          <td className="py-2 px-4 border-b">{new Date(race.date).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</td>
-                          <td className="py-2 px-4 border-b">
-                            <button
-                              className={`px-4 py-1 rounded 
-                                ${currentRace === race.id ? 'bg-blue-500 text-white' : 'bg-gray-200'} 
-                                ${race.completed ? 'line-through opacity-50' : ''}
-                                ${isRaceLocked(race.id) && !race.completed ? 'bg-yellow-500 text-white' : ''}`}
-                              onClick={() => setCurrentRace(race.id)}
-                              disabled={race.completed}
-                              title={race.completed ? 'Race completed' : isRaceLocked(race.id) ? 'Submissions locked' : 'Select race'}
-                            >
-                              {currentRace === race.id ? 'Selected' : race.completed ? 'Completed' : isRaceLocked(race.id) ? 'Locked' : 'Select'}
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              
-              {/* Driver selection form with team grouping */}
-              <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">Pick Drivers for Round {currentRace}: {races.find(r => r.id === currentRace)?.name} ({races.find(r => r.id === currentRace)?.circuit})</h2>
+            if (currentUser && currentUser.picks && currentUser.picks['1']) {
+                const tr = document.createElement('tr');
+                tr.className = 'bg-gray-50';
                 
-                {/* First place */}
-                <div className="mb-4">
-                  <label className="block mb-2 font-medium">1st Place</label>
-                  <select 
-                    className="w-full p-2 border rounded"
-                    value={picks.first || ''}
-                    onChange={(e) => setPicks({...picks, first: Number(e.target.value)})}
-                  >
-                    <option value="">Select a driver</option>
-                    {Array.from(new Set(drivers.map(driver => driver.team))).sort().map(team => (
-                      <optgroup key={team} label={team}>
-                        {drivers.filter(driver => driver.team === team).map(driver => (
-                          <option key={driver.id} value={driver.id}>
-                            {driver.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </select>
-                </div>
+                // Race
+                const tdRace = document.createElement('td');
+                tdRace.className = 'py-2 px-4 border-b';
+                tdRace.textContent = 'Round 1: Australian Grand Prix';
+                tr.appendChild(tdRace);
                 
-                {/* Second place */}
-                <div className="mb-4">
-                  <label className="block mb-2 font-medium">2nd Place</label>
-                  <select 
-                    className="w-full p-2 border rounded"
-                    value={picks.second || ''}
-                    onChange={(e) => setPicks({...picks, second: Number(e.target.value)})}
-                  >
-                    <option value="">Select a driver</option>
-                    {Array.from(new Set(drivers.map(driver => driver.team))).sort().map(team => (
-                      <optgroup key={team} label={team}>
-                        {drivers.filter(driver => driver.team === team).map(driver => (
-                          <option key={driver.id} value={driver.id}>
-                            {driver.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </select>
-                </div>
+                // First place
+                const tdFirst = document.createElement('td');
+                tdFirst.className = 'py-2 px-4 border-b';
+                const firstDriver = drivers.find(d => d.id === currentUser.picks['1'].first);
+                if (firstDriver) {
+                    tdFirst.innerHTML = `${firstDriver.name} <span class="team-badge" style="background-color: ${firstDriver.color}; color: ${firstDriver.textColor}">${firstDriver.team}</span>`;
+                }
+                tr.appendChild(tdFirst);
                 
-                {/* Third place */}
-                <div className="mb-4">
-                  <label className="block mb-2 font-medium">3rd Place</label>
-                  <select 
-                    className="w-full p-2 border rounded"
-                    value={picks.third || ''}
-                    onChange={(e) => setPicks({...picks, third: Number(e.target.value)})}
-                  >
-                    <option value="">Select a driver</option>
-                    {Array.from(new Set(drivers.map(driver => driver.team))).sort().map(team => (
-                      <optgroup key={team} label={team}>
-                        {drivers.filter(driver => driver.team === team).map(driver => (
-                          <option key={driver.id} value={driver.id}>
-                            {driver.name}
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </select>
-                </div>
+                // Second place
+                const tdSecond = document.createElement('td');
+                tdSecond.className = 'py-2 px-4 border-b';
+                const secondDriver = drivers.find(d => d.id === currentUser.picks['1'].second);
+                if (secondDriver) {
+                    tdSecond.innerHTML = `${secondDriver.name} <span class="team-badge" style="background-color: ${secondDriver.color}; color: ${secondDriver.textColor}">${secondDriver.team}</span>`;
+                }
+                tr.appendChild(tdSecond);
                 
-                <button 
-                  className="px-4 py-2 bg-blue-500 text-white rounded w-full"
-                  onClick={savePicks}
-                >
-                  Save Picks
-                </button>
-              </div>
-              
-              {/* Current Picks Display */}
-              <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">Current Picks</h2>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full bg-white">
-                    <thead>
-                      <tr>
-                        <th className="py-2 px-4 border-b text-left">Player</th>
-                        <th className="py-2 px-4 border-b text-left">Race</th>
-                        <th className="py-2 px-4 border-b text-left">1st Place</th>
-                        <th className="py-2 px-4 border-b text-left">2nd Place</th>
-                        <th className="py-2 px-4 border-b text-left">3rd Place</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {users.flatMap(user => 
-                        Object.entries(user.picks).map(([raceId, racePicks]) => (
-                          <tr key={`${user.id}-${raceId}`}>
-                            <td className="py-2 px-4 border-b">{user.name}</td>
-                            <td className="py-2 px-4 border-b">Round {raceId}: {races.find(r => r.id === Number(raceId))?.name}</td>
-                            <td className="py-2 px-4 border-b">
-                              {drivers.find(d => d.id === racePicks.first)?.name}
-                              {drivers.find(d => d.id === racePicks.first) && 
-                                <span 
-                                  className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                  style={{
-                                    backgroundColor: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.bg || '#ccc',
-                                    color: teamColors[drivers.find(d => d.id === racePicks.first)?.team]?.text || 'black'
-                                  }}
-                                >
-                                  {drivers.find(d => d.id === racePicks.first)?.team}
-                                </span>
-                              }
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              {drivers.find(d => d.id === racePicks.second)?.name}
-                              {drivers.find(d => d.id === racePicks.second) && 
-                                <span 
-                                  className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                  style={{
-                                    backgroundColor: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.bg || '#ccc',
-                                    color: teamColors[drivers.find(d => d.id === racePicks.second)?.team]?.text || 'black'
-                                  }}
-                                >
-                                  {drivers.find(d => d.id === racePicks.second)?.team}
-                                </span>
-                              }
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                              {drivers.find(d => d.id === racePicks.third)?.name}
-                              {drivers.find(d => d.id === racePicks.third) && 
-                                <span 
-                                  className="ml-2 px-2 py-1 text-xs rounded-full" 
-                                  style={{
-                                    backgroundColor: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.bg || '#ccc',
-                                    color: teamColors[drivers.find(d => d.id === racePicks.third)?.team]?.text || 'black'
-                                  }}
-                                >
-                                  {drivers.find(d => d.id === racePicks.third)?.team}
-                                </span>
-                              }
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              
-              {/* Completed Races Results */}
-              <div className="mb-6 p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">Completed Race Results</h2>
+                // Third place
+                const tdThird = document.createElement('td');
+                tdThird.className = 'py-2 px-4 border-b';
+                const thirdDriver = drivers.find(d => d.id === currentUser.picks['1'].third);
+                if (thirdDriver) {
+                    tdThird.innerHTML = `${thirdDriver.name} <span class="team-badge" style="background-color: ${thirdDriver.color}; color: ${thirdDriver.textColor}">${thirdDriver.team}</span>`;
+                }
+                tr.appendChild(tdThird);
                 
-                {races.filter(race => race.completed).length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white">
-                      <thead>
-                        <tr>
-                          <th className="py-2 px-4 border-b text-left">Race</th>
-                          <th className="py-2 px-4 border-b text-center">1st</th>
-                          <th className="py-2 px-4 border-b text-center">2nd</th>
-                          <th className="py-2 px-4 border-b text-center">3rd</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {races.filter(race => race.completed).map(race => (
-                          <tr key={race.id}>
-                            <td className="py-2 px-4 border-b">Round {race.id}: {race.name}</td>
-                            <td className="py-2 px-4 border-b text-center">
-                              {race.results && race.results[0] && (
-                                <div className="flex items-center justify-center">
-                                  <span 
-                                    className="inline-block w-3 h-3 rounded-full mr-2"
-                                    style={{
-                                      backgroundColor: teamColors[drivers.find(d => d.id === race.results[0])?.team]?.bg || '#ccc'
-                                    }}
-                                  ></span>
-                                  {drivers.find(d => d.id === race.results[0])?.name}
-                                </div>
-                              )}
-                            </td>
-                            <td className="py-2 px-4 border-b text-center">
-                              {race.results && race.results[1] && (
-                                <div className="flex items-center justify-center">
-                                  <span 
-                                    className="inline-block w-3 h-3 rounded-full mr-2"
-                                    style={{
-                                      backgroundColor: teamColors[drivers.find(d => d.id === race.results[1])?.team]?.bg || '#ccc'
-                                    }}
-                                  ></span>
-                                  {drivers.find(d => d.id === race.results[1])?.name}
-                                </div>
-                              )}
-                            </td>
-                            <td className="py-2 px-4 border-b text-center">
-                              {race.results && race.results[2] && (
-                                <div className="flex items-center justify-center">
-                                  <span 
-                                    className="inline-block w-3 h-3 rounded-full mr-2"
-                                    style={{
-                                      backgroundColor: teamColors[drivers.find(d => d.id === race.results[2])?.team]?.bg || '#ccc'
-                                    }}
-                                  ></span>
-                                  {drivers.find(d => d.id === race.results[2])?.name}
-                                </div>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p>No races have been completed yet.</p>
-                )}
-              </div>
-              
-              {/* Leaderboard */}
-              <div className="p-4 bg-white rounded shadow">
-                <h2 className="text-xl font-semibold mb-3">Leaderboard</h2>
-                {leaderboard.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full bg-white">
-                      <thead>
-                        <tr>
-                          <th className="py-2 px-4 border-b text-left">Position</th>
-                          <th className="py-2 px-4 border-b text-left">Player</th>
-                          <th className="py-2 px-4 border-b text-left">Score</th>
-                          {races.filter(race => race.completed).map(race => (
-                            <th key={race.id} className="py-2 px-4 border-b text-center">R{race.id}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {leaderboard.map((player, index) => (
-                          <tr key={player.id} className={index === 0 ? 'bg-yellow-100' : ''}>
-                            <td className="py-2 px-4 border-b">{index + 1}</td>
-                            <td className="py-2 px-4 border-b">{player.name}</td>
-                            <td className="py-2 px-4 border-b font-bold">{player.score}</td>
-                            {races.filter(race => race.completed).map(race => {
-                              const user = users.find(u => u.id === player.id);
-                              const raceScore = user?.scores[race.id] || '-';
-                              return (
-                                <td key={race.id} className="py-2 px-4 border-b text-center">
-                                  {raceScore}
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p>No scores recorded yet. Complete a race to see the leaderboard.</p>
-                )}
-              </div>
-            </div>
-          );
-        };
-
-        // Mount the React app
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<F1TippingApp />);
+                // Score
+                const tdScore = document.createElement('td');
+                tdScore.className = 'py-2 px-4 border-b font-bold';
+                tdScore.textContent = currentUser.scores['1'] || '-';
+                tr.appendChild(tdScore);
+                
+                historicalTable.appendChild(tr);
+            } else {
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                td.className = 'py-4 text-center text-gray-500';
+                td.colSpan = 5;
+                td.textContent = 'No historical picks available yet.';
+                tr.appendChild(td);
+                historicalTable.appendChild(tr);
+            }
+        }
+        
+        // Handle Enter key in login form
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                login();
+            }
+        });
     </script>
 </body>
 </html>
