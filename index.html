@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>F1 2025 Tipping Competition</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Shrunk F1 2025 Tipping Competition</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
@@ -28,7 +28,7 @@
   <!-- Header -->
   <header class="f1-header p-4 shadow-md">
     <div class="container mx-auto">
-      <h1 class="text-3xl font-bold">F1 2025 Tipping Competition</h1>
+      <h1 class="text-3xl font-bold">Shrunk F1 2025 Tipping Competition</h1>
     </div>
   </header>
 
@@ -39,35 +39,51 @@
       <h2 class="text-2xl font-bold mb-6 text-center">Login Required</h2>
       <p class="mb-4 text-gray-600">Please log in to access the F1 2025 Tipping Competition.</p>
       <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="username">Username</label>
-        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="username">
+          Username
+        </label>
+        <input
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="username"
+          type="text"
+          placeholder="Username"
+        />
       </div>
       <div class="mb-6">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">Password</label>
-        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="password">
+          Password
+        </label>
+        <input
+          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          id="password"
+          type="password"
+          placeholder="Password"
+        />
       </div>
       <div class="flex items-center justify-between">
-        <button id="loginButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
+        <button
+          id="loginButton"
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="button"
+        >
           Sign In
         </button>
       </div>
-      <div class="mt-6 text-sm text-gray-500">
-        <p>Demo accounts:</p>
-        <p>Scotty: username "scotty", password "pass1"</p>
-        <p>Lina: username "lina", password "pass2"</p>
-        <p>Steve: username "steve", password "pass3"</p>
-      </div>
-    </div>
 
     <!-- Main App (hidden until login) -->
     <div id="mainApp" class="hidden">
-      <!-- User bar -->
+      <!-- User Bar -->
       <div class="flex justify-between items-center mb-6 bg-white p-4 rounded shadow">
         <h2 class="text-xl font-semibold">Welcome, <span id="userName">User</span>!</h2>
-        <button class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded" id="logoutButton">Logout</button>
+        <button 
+          class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded"
+          id="logoutButton"
+        >
+          Logout
+        </button>
       </div>
 
-      <!-- Leaderboard -->
+      <!-- Leaderboard (lower score is better) -->
       <div class="p-4 bg-white rounded shadow mb-6">
         <h2 class="text-xl font-semibold mb-3">Leaderboard</h2>
         <div class="overflow-x-auto">
@@ -81,7 +97,7 @@
               </tr>
             </thead>
             <tbody id="leaderboardBody">
-              <!-- Leaderboard rows will be dynamically generated -->
+              <!-- Leaderboard rows will be generated dynamically -->
             </tbody>
           </table>
         </div>
@@ -102,16 +118,16 @@
               </tr>
             </thead>
             <tbody id="racesBody">
-              <!-- Race rows will be generated here -->
+              <!-- Race rows generated here -->
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Driver Selection for Selected Race -->
+      <!-- Driver Selection for Race Picks -->
       <div class="mb-6 p-4 bg-white rounded shadow">
         <h2 class="text-xl font-semibold mb-3" id="racePicksTitle">Pick Drivers for Race</h2>
-        <!-- First place -->
+        <!-- First Place -->
         <div class="mb-4">
           <label class="block mb-2 font-medium">1st Place</label>
           <select class="w-full p-2 border rounded" id="firstPlace">
@@ -119,24 +135,26 @@
             <!-- Options generated dynamically -->
           </select>
         </div>
-        <!-- Second place -->
+        <!-- Second Place -->
         <div class="mb-4">
           <label class="block mb-2 font-medium">2nd Place</label>
           <select class="w-full p-2 border rounded" id="secondPlace">
             <option value="">Select a driver</option>
           </select>
         </div>
-        <!-- Third place -->
+        <!-- Third Place -->
         <div class="mb-4">
           <label class="block mb-2 font-medium">3rd Place</label>
           <select class="w-full p-2 border rounded" id="thirdPlace">
             <option value="">Select a driver</option>
           </select>
         </div>
-        <button class="px-4 py-2 bg-blue-500 text-white rounded w-full" id="savePicksButton">Save Picks</button>
+        <button class="px-4 py-2 bg-blue-500 text-white rounded w-full" id="savePicksButton">
+          Save Picks
+        </button>
       </div>
 
-      <!-- Historical Picks (completed races) -->
+      <!-- Historical Picks (Completed Races) -->
       <div class="mb-6 p-4 bg-white rounded shadow">
         <h2 class="text-xl font-semibold mb-3">My Historical Picks</h2>
         <div class="overflow-x-auto">
@@ -151,7 +169,7 @@
               </tr>
             </thead>
             <tbody id="historicalPicks">
-              <!-- Historical picks will be loaded here -->
+              <!-- Historical picks loaded here -->
             </tbody>
           </table>
         </div>
@@ -171,7 +189,7 @@
               </tr>
             </thead>
             <tbody id="completedRacesBody">
-              <!-- Completed race results will be generated -->
+              <!-- Completed race results generated here -->
             </tbody>
           </table>
         </div>
@@ -194,18 +212,18 @@
     let currentUser = null;
     let currentRace = null;
 
-    // Load data from JSON files (assumes these files are served from your server)
+    // Load data from JSON files using GitHub raw URLs
     async function loadData() {
       try {
-        const playersRes = await fetch('players.json');
+        const playersRes = await fetch('https://raw.githubusercontent.com/shrunk-scott/F1Tipping/main/players.json');
         let playersData = await playersRes.json();
         players = playersData.players;
 
-        const driversRes = await fetch('drivers.json');
+        const driversRes = await fetch('https://raw.githubusercontent.com/shrunk-scott/F1Tipping/main/drivers.json');
         let driversData = await driversRes.json();
         drivers = driversData.drivers;
 
-        const racesRes = await fetch('races.json');
+        const racesRes = await fetch('https://raw.githubusercontent.com/shrunk-scott/F1Tipping/main/races.json');
         let racesData = await racesRes.json();
         races = racesData.races;
 
@@ -246,7 +264,7 @@
       ['firstPlace', 'secondPlace', 'thirdPlace'].forEach(selectId => {
         const selectEl = document.getElementById(selectId);
         selectEl.innerHTML = '<option value="">Select a driver</option>';
-        // Group drivers by team for clarity (optional)
+        // Group drivers by team (optional)
         const teams = {};
         drivers.forEach(driver => {
           if (!teams[driver.team]) teams[driver.team] = [];
@@ -266,12 +284,12 @@
       });
     }
 
-    // Update the leaderboard based on players' scores (example for Round 1)
+    // Update leaderboard (lowest score is best)
     function updateLeaderboard() {
       const leaderboardBody = document.getElementById('leaderboardBody');
       leaderboardBody.innerHTML = '';
-      // Sort players by their Round 1 score (or total score, if available)
-      const sortedPlayers = [...players].sort((a, b) => (a.scores['1'] || 0) - (b.scores['1'] || 0));
+      // Sort players by Round 1 score (assuming lower is better)
+      const sortedPlayers = [...players].sort((a, b) => (a.scores['1'] || Infinity) - (b.scores['1'] || Infinity));
       sortedPlayers.forEach((player, index) => {
         const tr = document.createElement('tr');
         if (currentUser && player.id === currentUser.id) {
@@ -287,7 +305,7 @@
       });
     }
 
-    // Render completed races results (showing top three finishers)
+    // Render completed race results (showing top three finishers)
     function renderCompletedRaces() {
       const completedBody = document.getElementById('completedRacesBody');
       completedBody.innerHTML = '';
@@ -309,7 +327,7 @@
       });
     }
 
-    // Helper: Render a driver badge (name and colored dot)
+    // Helper to render driver badge
     function renderDriverBadge(driverId) {
       const driver = drivers.find(d => d.id === driverId);
       if (!driver) return '';
@@ -319,7 +337,7 @@
               </div>`;
     }
 
-    // Login function: uses players data
+    // Login using players data
     function login() {
       const username = document.getElementById('username').value.trim().toLowerCase();
       const password = document.getElementById('password').value;
@@ -345,7 +363,7 @@
       document.getElementById('password').value = '';
     }
 
-    // Select a race (update the title for driver picks)
+    // Select race for picks
     function selectRace(raceId) {
       currentRace = raceId;
       const race = races.find(r => r.id === raceId);
@@ -354,7 +372,7 @@
       }
     }
 
-    // Save driver picks for the current user and race
+    // Save driver picks for current user and race
     function savePicks() {
       const first = document.getElementById('firstPlace').value;
       const second = document.getElementById('secondPlace').value;
@@ -371,7 +389,6 @@
         alert('User or race not selected');
         return;
       }
-      // Update the current user's picks
       if (!currentUser.picks) currentUser.picks = {};
       currentUser.picks[currentRace] = {
         first: parseInt(first),
@@ -379,43 +396,36 @@
         third: parseInt(third)
       };
       alert('Picks saved successfully!');
-      // Optionally, update the server with new players data
       updatePlayersData();
       loadHistoricalPicks();
     }
 
-    // Load historical picks for the current user (if any)
+    // Load historical picks for current user (assumes Round 1 for demo)
     function loadHistoricalPicks() {
       const historicalTable = document.getElementById('historicalPicks');
       historicalTable.innerHTML = '';
       if (currentUser && currentUser.picks && currentUser.picks['1']) {
-        // For demonstration, we load Round 1 picks
         const tr = document.createElement('tr');
         tr.className = 'bg-gray-50';
-        // Race cell
         const tdRace = document.createElement('td');
         tdRace.className = 'py-2 px-4 border-b';
         tdRace.textContent = 'Round 1: Australian Grand Prix';
         tr.appendChild(tdRace);
-        // First place
         const tdFirst = document.createElement('td');
         tdFirst.className = 'py-2 px-4 border-b';
         const firstDriver = drivers.find(d => d.id === currentUser.picks['1'].first);
         tdFirst.innerHTML = firstDriver ? `${firstDriver.name} <span class="team-badge" style="background-color: ${firstDriver.color}; color: ${firstDriver.textColor}">${firstDriver.team}</span>` : '';
         tr.appendChild(tdFirst);
-        // Second place
         const tdSecond = document.createElement('td');
         tdSecond.className = 'py-2 px-4 border-b';
         const secondDriver = drivers.find(d => d.id === currentUser.picks['1'].second);
         tdSecond.innerHTML = secondDriver ? `${secondDriver.name} <span class="team-badge" style="background-color: ${secondDriver.color}; color: ${secondDriver.textColor}">${secondDriver.team}</span>` : '';
         tr.appendChild(tdSecond);
-        // Third place
         const tdThird = document.createElement('td');
         tdThird.className = 'py-2 px-4 border-b';
         const thirdDriver = drivers.find(d => d.id === currentUser.picks['1'].third);
         tdThird.innerHTML = thirdDriver ? `${thirdDriver.name} <span class="team-badge" style="background-color: ${thirdDriver.color}; color: ${thirdDriver.textColor}">${thirdDriver.team}</span>` : '';
         tr.appendChild(tdThird);
-        // Score
         const tdScore = document.createElement('td');
         tdScore.className = 'py-2 px-4 border-b font-bold';
         tdScore.textContent = currentUser.scores['1'] || '-';
@@ -432,7 +442,7 @@
       }
     }
 
-    // Update players data on the server (requires a backend API endpoint)
+    // Update players data on the server (backend endpoint required)
     async function updatePlayersData() {
       try {
         const response = await fetch('/api/updatePlayers', {
@@ -449,7 +459,6 @@
       }
     }
 
-    // Event listeners
     document.getElementById('loginButton').addEventListener('click', login);
     document.getElementById('logoutButton').addEventListener('click', logout);
     document.getElementById('savePicksButton').addEventListener('click', savePicks);
@@ -457,7 +466,6 @@
       if (e.key === 'Enter') login();
     });
 
-    // On page load, fetch JSON data
     document.addEventListener('DOMContentLoaded', loadData);
   </script>
 </body>
